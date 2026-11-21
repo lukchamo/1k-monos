@@ -107,20 +107,21 @@ export function staticInvestorIds(): string[] {
 }
 
 /** llamada interna a la API para rutas de la web que reenvían (suscripciones a avisos) */
-export async function labFetch(path: string, init?: { method?: string; body?: string; clientIp?: string | null }): Promise<Response | null> {
+export async function labFetch(path: string, init?: { method?: string; body?: string; clientIp?: string | null; timeoutMs?: number }): Promise<Response | null> {
+  const wait = init?.timeoutMs ?? TIMEOUT_MS;
   const headers: Record<string, string> = { "content-type": "application/json" };
   if (init?.clientIp) headers["x-client-ip"] = init.clientIp;
   try {
     const { env } = await getCloudflareContext({ async: true });
     const svc = (env as { LAB_API?: { fetch: typeof fetch } }).LAB_API;
-    if (svc) return await svc.fetch(`https://lab.internal${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(TIMEOUT_MS) });
+    if (svc) return await svc.fetch(`https://lab.internal${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(wait) });
   } catch {
     /* sin binding: cae a la URL */
   }
   const base = process.env.LAB_API_URL;
   if (!base) return null;
   try {
-    return await fetch(`${base}${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(TIMEOUT_MS), cache: "no-store" });
+    return await fetch(`${base}${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(wait), cache: "no-store" });
   } catch {
     return null;
   }

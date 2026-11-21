@@ -4,7 +4,7 @@ import { labFetch } from "@/lib/api";
 export async function GET(req: Request) {
   const id = new URL(req.url).searchParams.get("investor") ?? "";
   if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(id)) return Response.json({ error: "inversionista inválido" }, { status: 400 });
-  const res = await labFetch(`/v1/playground?investor=${id}`);
+  const res = await labFetch(`/v1/playground?investor=${id}`, { timeoutMs: 20_000 });
   if (!res) return Response.json({ error: "el laboratorio no responde" }, { status: 503 });
   return new Response(await res.text(), {
     status: res.status,

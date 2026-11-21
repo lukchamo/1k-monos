@@ -43,6 +43,13 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
+/** pide un JSON y lo intenta una segunda vez si el primer intento falla (arranque en frío) */
+const getJson = (url: string) =>
+  fetch(url)
+    .then((r) => (r.ok ? r : fetch(url)))
+    .catch(() => fetch(url))
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))));
+
 const inputCls = "w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-ink focus:border-brand";
 
 function Pct({ label, value, onChange, step = 0.05, max = 20 }: { label: string; value: number; onChange: (v: number) => void; step?: number; max?: number }) {
@@ -89,8 +96,7 @@ export function Playground({ options, defaultId }: { options: Option[]; defaultI
   useEffect(() => {
     let alive = true;
     setError(null);
-    fetch(`/api/playground?investor=${sourceId}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    getJson(`/api/playground?investor=${sourceId}`)
       .then((d: Data) => {
         if (!alive) return;
         setData(d);

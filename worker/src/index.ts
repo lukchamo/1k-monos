@@ -87,13 +87,36 @@ function memo<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T>
   value.catch(() => MEMO.get(key)?.value === value && MEMO.delete(key)); // un fallo no se queda guardado
   return value;
 }
+/**
+ * Caché del borde para las respuestas caras de calcular (el mercado completo, las posiciones de un
+ * inversionista). La memoria de arriba muere con cada isolate; esta la comparten todos los del
+ * punto de presencia. La clave es la URL sin parámetros que no conozcamos.
+ */
+async function edgeCached(ctx: ExecutionContext, key: string, ttlSeconds: number, build: () => Promise<Response>): Promise<Response> {
+  const cache = (caches as unknown as { default: Cache }).default;
+  const req = new Request(`https://cache.1kmonos.internal/${key}`);
+  try {
+    const hit = await cache.match(req);
+    if (hit) return hit;
+  } catch {
+    /* sin caché disponible (desarrollo): se calcula */
+  }
+  const res = await build();
+  if (res.ok) {
+    const copy = new Response(res.clone().body, res);
+    copy.headers.set("cache-control", `public, max-age=${ttlSeconds}`);
+    ctx.waitUntil(cache.put(req, copy).catch(() => {}));
+  }
+  return res;
+}
+
 const SHORT = 30_000;
 const LONG = 120_000;
 
 const lineup = (env: Env) =>
   Promise.all(LINEUP.map(async (s) => ({ id: s.id, name: s.name, family: s.family, version: s.version, rule: s.rule, config_hash: await configHash(s, env.TAXONOMY_VERSION) })));
 
-async function route(req: Request, env: Env): Promise<Response> {
+async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(req.url);
   const p = url.pathname;
   const q = url.searchParams;
@@ -140,16 +163,19 @@ async function route(req: Request, env: Env): Promise<Response> {
     if (p === "/v1/push/key") return env.VAPID_PUBLIC_KEY ? json({ key: env.VAPID_PUBLIC_KEY }, 200, "long") : fail(503, "avisos sin configurar");
 
     // cierres y recuento diario de largos y cortos del laboratorio, para el playground manual
-    if (p === "/v1/market") {
-      const out = await memo("market", LONG * 5, () => marketData(env.DB));
-      return out ? json({ ...out, aviso: DISCLAIMER }, 200, "long") : fail(404, "todavía no hay ninguna corrida");
-    }
+    if (p === "/v1/market")
+      return edgeCached(ctx, "market", 600, async () => {
+        const out = await memo("market", LONG * 5, () => marketData(env.DB));
+        return out ? json({ ...out, aviso: DISCLAIMER }, 200, "long") : fail(404, "todavía no hay ninguna corrida");
+      });
 
     // cierres y posiciones diarias de un inversionista, para el simulador de la web
     if (p === "/v1/playground") {
       const id = investorOf(q.get("investor"));
-      const out = await memo(`playground:${id}`, LONG, () => playgroundData(env.DB, id));
-      return out ? json({ ...out, aviso: DISCLAIMER }, 200, "long") : fail(404, "todavía no hay ninguna corrida");
+      return edgeCached(ctx, `playground/${id}`, 600, async () => {
+        const out = await memo(`playground:${id}`, LONG, () => playgroundData(env.DB, id));
+        return out ? json({ ...out, aviso: DISCLAIMER }, 200, "long") : fail(404, "todavía no hay ninguna corrida");
+      });
     }
 
     if (p === "/v1/universe") return json({ segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, 200, "long");
@@ -240,9 +266,9 @@ async function route(req: Request, env: Env): Promise<Response> {
 }
 
 export default {
-  async fetch(req, env): Promise<Response> {
+  async fetch(req, env, ctx): Promise<Response> {
     try {
-      return await route(req, env);
+      return await route(req, env, ctx);
     } catch (err) {
       if (err instanceof BadInput) return fail(400, err.message);
       // el detalle va al log (observabilidad), nunca al cliente

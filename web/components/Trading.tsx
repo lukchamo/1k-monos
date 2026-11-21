@@ -37,6 +37,13 @@ const fmtDate = (d: string) => dateFmt.format(new Date(`${d}T00:00:00Z`));
 const priceFmt = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
 const pctFmt = new Intl.NumberFormat("es-ES", { style: "percent", maximumFractionDigits: 1, signDisplay: "exceptZero" });
 const tone = (v: number) => (Math.abs(v) < 0.005 ? "text-ink-2" : v > 0 ? "text-up" : "text-down");
+/** pide un JSON y lo intenta una segunda vez si el primer intento falla (arranque en frío) */
+const getJson = (url: string) =>
+  fetch(url)
+    .then((r) => (r.ok ? r : fetch(url)))
+    .catch(() => fetch(url))
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))));
+
 const inputCls = "w-full rounded-lg border border-line bg-bg px-3 py-2.5 text-sm text-ink focus:border-brand";
 
 const W = 720;
@@ -60,8 +67,7 @@ export function Trading() {
   // carga el mercado y lo que hubiera guardado en este navegador
   useEffect(() => {
     let alive = true;
-    fetch("/api/market")
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    getJson("/api/market")
       .then((d: Market) => {
         if (!alive) return;
         setMk(d);
