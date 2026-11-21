@@ -61,7 +61,7 @@ export default async function Home() {
           </p>
           <div className="flex flex-wrap gap-2.5 text-sm sm:gap-3">
             <a href="#ranking" className="rounded-lg bg-brand px-4 py-2.5 font-medium text-brand-ink hover:brightness-110">Ver el ranking</a>
-            <Link href="/simulador" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Probar con 200 € ficticios</Link>
+            <Link href="/playground" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Practicar con 200 € ficticios</Link>
             <Link href="/metodo" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Cómo funciona</Link>
             <a href={SITE.repo} target="_blank" rel="noreferrer" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Ver el código</a>
           </div>

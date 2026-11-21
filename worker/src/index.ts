@@ -7,7 +7,7 @@
 import type { Env } from "./env";
 import { configHash, ENGINE_VERSION, LINEUP } from "./engine/registry";
 import { ECONOMIES, GROUPS, INDICATORS, SEGMENTS, UNIVERSE } from "./engine/universe";
-import { curves, decisionReason, labStatus, latestNews, newsFor, paperPositions, playgroundData, ranking } from "./data/store";
+import { curves, decisionReason, labStatus, latestNews, newsFor, paperPositions, marketData, playgroundData, ranking } from "./data/store";
 import { allow, backtestParams, BadInput, DISCLAIMER, fail, json, preflight, readJson, tokenOk, v } from "./guard";
 import { lector, pressure, pressureBreakdown } from "./news/scoring";
 import { ingestNews } from "./ingest/news";
@@ -114,7 +114,7 @@ async function route(req: Request, env: Env): Promise<Response> {
 
   // ── lectura pública ────────────────────────────────────────────────────────
   if (GET) {
-    const heavy = p === "/v1/lab" || p === "/v1/playground" || p === "/v1/curves" || p === "/v1/pressure" || p === "/v1/decisions";
+    const heavy = p === "/v1/lab" || p === "/v1/playground" || p === "/v1/market" || p === "/v1/curves" || p === "/v1/pressure" || p === "/v1/decisions";
     if (!(await allow(env, req, heavy ? "heavy" : "read"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
 
     if (p === "/v1/status") return json({ ...(await memo("status", SHORT, () => labStatus(env.DB))), engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString(), aviso: DISCLAIMER }, 200, "short");
@@ -138,6 +138,12 @@ async function route(req: Request, env: Env): Promise<Response> {
 
     // clave pública para suscribirse a los avisos del navegador
     if (p === "/v1/push/key") return env.VAPID_PUBLIC_KEY ? json({ key: env.VAPID_PUBLIC_KEY }, 200, "long") : fail(503, "avisos sin configurar");
+
+    // cierres y recuento diario de largos y cortos del laboratorio, para el playground manual
+    if (p === "/v1/market") {
+      const out = await memo("market", LONG * 5, () => marketData(env.DB));
+      return out ? json({ ...out, aviso: DISCLAIMER }, 200, "long") : fail(404, "todavía no hay ninguna corrida");
+    }
 
     // cierres y posiciones diarias de un inversionista, para el simulador de la web
     if (p === "/v1/playground") {

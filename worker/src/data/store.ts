@@ -1,6 +1,6 @@
 /** Lectura y escritura en D1. Todo lo que el dashboard y el MCP consultan vive aquí. */
 import { buildPanel, type Panel } from "../engine/panel";
-import { contextFromPanel, runLab, withDependencies } from "../engine/registry";
+import { contextFromPanel, LINEUP, runLab, withDependencies } from "../engine/registry";
 import { equity, type Metrics } from "../engine/backtest";
 import type { Ctx } from "../engine/investors";
 import type { LabResult } from "../engine/registry";
@@ -237,4 +237,32 @@ export async function playgroundData(db: D1Database, investorId: string) {
     closes: c.C.map((serie) => win.map((t) => round(serie[t]))),
     positions: pos.map((serie) => win.map((t) => serie[t])),
   };
+}
+
+/**
+ * Mercado para el playground manual: los cierres de cada activo y, para cada día, cuántos
+ * inversionistas del laboratorio estaban en largo y cuántos en corto. Sale del mismo motor.
+ */
+export async function marketData(db: D1Database) {
+  const run = await db.prepare("SELECT start_date, end_date FROM runs WHERE status = 'complete' ORDER BY created_at DESC LIMIT 1").first<{ start_date: string; end_date: string }>();
+  if (!run) return null;
+  const last = (await db.prepare("SELECT MAX(date) AS d FROM market_days WHERE status = 'complete'").first<{ d: string | null }>())?.d ?? run.end_date;
+  const end = last > run.end_date ? last : run.end_date;
+  const c = contextFromPanel(await loadPanel(db, end));
+  const lab = runLab(c, { start: run.start_date, end, monkeys: 0 });
+  const win = lab.window;
+  const theses = LINEUP.filter((s) => s.family !== "Control");
+  const round = (x: number) => (Number.isFinite(x) ? Math.round(x * 1e4) / 1e4 : null);
+  const long = c.symbols.map(() => new Array<number>(win.length).fill(0));
+  const short = c.symbols.map(() => new Array<number>(win.length).fill(0));
+  for (const spec of theses) {
+    const pos = lab.investors[spec.name].positions;
+    for (let a = 0; a < c.symbols.length; a++)
+      for (let i = 0; i < win.length; i++) {
+        const p = pos[a][win[i]];
+        if (p > 0) long[a][i]++;
+        else if (p < 0) short[a][i]++;
+      }
+  }
+  return { start: run.start_date, end, dates: win.map((t) => c.dates[t]), symbols: c.symbols, closes: c.C.map((serie) => win.map((t) => round(serie[t]))), long, short, investors: theses.length };
 }

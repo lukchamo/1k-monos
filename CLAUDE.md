@@ -33,8 +33,9 @@ worker/      Cloudflare Worker en TypeScript
   src/guard.ts   guardarraíles de la API: validación, límite de ritmo, token, saneado de texto de terceros
   test/          paridad, point-in-time, noticias, validación, guardarraíles
 web/         Next.js 16 (App Router) en Cloudflare Workers con OpenNext
-  app/           portada, /inversionistas/[id], /simulador, /noticias, /metodo, /experimentos, /mcp, /aviso, /api/*
+  app/           portada, /inversionistas/[id], /playground, /simulador, /noticias, /metodo, /experimentos, /mcp, /aviso, /api/*
   lib/api.ts     lectura de la API por service binding (LAB_API); si falla, sirve data/snapshot.json
+  lib/paper.ts   cuenta de práctica del playground (pura, con tests): saldo, largos y cortos, apalancamiento, intereses y liquidación
   lib/sim.ts     simulador de cartera ficticia (puro, con tests): comisiones, diferencial, intereses, apalancamiento y liquidación
   lib/microui.ts micro-interfaces declarativas leídas de Cloudflare Artifacts (validador estricto)
   microui/       especificaciones de ejemplo
@@ -69,7 +70,8 @@ TOKEN=<token> scripts/pentest.sh                       # contra la API (8787) y 
 
 - **Caché: ISR por tiempo** (`export const revalidate`). No actives `cacheComponents` ni `use cache`: en Workers cuelga renders (opennextjs-cloudflare #1318).
 - **Responsive:** tras tocar la interfaz, comprueba que no hay desbordamiento horizontal a 360, 390, 768 y 1024 px. Un elemento `sr-only` dentro de un contenedor con scroll necesita que ese contenedor sea `relative`.
-- Server Components por defecto. Solo son de cliente `CurvesChart`, `LivePulse`, `PushToggle` y `Playground`.
+- Server Components por defecto. Solo son de cliente `CurvesChart`, `LivePulse`, `PushToggle`, `Playground` (simulador) y `Trading` (playground).
+- **Playground y simulador:** el playground nunca enseña precios posteriores al día en el que está el usuario.
 - **Simulador:** los costes de un bróker real solo se afirman si están publicados; lo demás va como supuesto editable y se dice en pantalla. Tests: `cd web && npm test`.
 - Todo dato llega por `getLab()` (una llamada a `/v1/lab`). No añadas llamadas por componente.
 - **El aviso «no es una recomendación» va en todas las páginas.** Ningún texto aconseja qué hacer con el dinero.

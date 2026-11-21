@@ -28,6 +28,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 
 | D-20 | **Simulador con dinero ficticio en la web** (`/simulador`). Sigue día a día a un inversionista o a un mono con un capital elegido, costes de bróker y apalancamiento opcional. | Ver el efecto de comisiones, intereses y apalancamiento sobre poco capital enseña más que el ranking. | Vive en la web (`web/lib/sim.ts`), fuera del motor: no afecta a la paridad ni al DSR. De Neverless solo se afirma lo que publica (comisión 0, divisa 0, hasta 5×); su diferencial e intereses son supuestos editables. No ejecuta órdenes reales ni se conecta a ningún bróker. |
 
+| D-21 | **Playground manual** (`/playground`): cuenta de práctica donde el usuario añade saldo, elige activo y abre largos o cortos con hasta 5×, sobre los precios reales de cada día, avanzando el tiempo a su ritmo. El correo al autor enlaza cada llamada con el playground ya preparado. | El autor quiere practicar «como en Neverless» antes de pensar en dinero real. | Vive en la web (`web/lib/paper.ts`), fuera del motor. Nunca muestra precios futuros. La cuenta se guarda solo en el navegador. Las reglas de margen de Neverless que no son públicas (diferencial, intereses, margen de mantenimiento) son supuestos declarados en pantalla. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.
