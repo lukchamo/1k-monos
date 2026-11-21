@@ -89,3 +89,12 @@ test("una cuenta guardada que no encaja se descarta", () => {
   assert.equal(parseAccount({ ...newAccount(), positions: [{ symbol: "<script>", side: 1, size: 1, entry: 1, id: 1, openedOn: "d" }] }), null);
   assert.deepEqual(parseAccount(JSON.parse(JSON.stringify(newAccount(150, "USD")))), newAccount(150, "USD"));
 });
+
+test("precio de liquidación de una posición nueva: 5× largo ≈ −11 %, 5× corto ≈ +9 %, 1× largo no aplica", () => {
+  const a = newAccount(50);
+  const at = (side: 1 | -1, lev: number) => liquidationPrice(a, { side, size: 50 * lev, entry: 100 }, {}, FREE);
+  near(at(1, 5)! / 100, 200 / 225);
+  near(at(-1, 5)! / 100, 300 / 275);
+  assert.equal(at(1, 1), null);
+  assert.ok(at(-1, 1)! > 180); // un corto sin apalancamiento también se liquida si el precio casi se duplica
+});

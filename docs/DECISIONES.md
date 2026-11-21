@@ -32,6 +32,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 
 | D-22 | **Tutoriales y vídeos** (`/tutoriales`): un tutorial interactivo dentro de la web y cinco vídeos (dos reels en vertical y en ancho, y un recorrido) alojados en Cloudinary. Los vídeos se generan desde `media/video.html` con una línea de tiempo en JavaScript y se graban fotograma a fotograma. | Explicar el laboratorio al público y tener material para promocionarlo. | Los vídeos solo usan datos del experimento real y dicen en pantalla que no es una recomendación. El caso del corto en Ethereum incluye que un día no demuestra nada. Si cambian los datos, se cambian los guiones y se vuelve a grabar. Promocionar el proyecto en redes sigue sujeto a D-16 y D-19: consulta legal antes de darle difusión amplia. |
 
+| D-23 | **Voz en off en los vídeos y guía fácil en euros.** Los vídeos llevan narración generada con ElevenLabs y las escenas se alargan para ir al ritmo de la voz. `/tutoriales` suma una calculadora que traduce cada caso a euros y un vídeo guía con 50 € ficticios. | Con voz y con cantidades concretas se entiende sin saber de bolsa. | Los números de la guía y de la calculadora salen de las mismas reglas que el playground (`web/lib/paper.ts`), con un test que fija el precio de liquidación. Al preparar la guía apareció un error en ese cálculo en pantalla; está corregido. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.

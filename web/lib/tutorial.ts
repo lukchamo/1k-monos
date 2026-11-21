@@ -107,13 +107,39 @@ export interface VideoItem {
 
 const CDN = "https://res.cloudinary.com/dh26q79sh/video/upload";
 const video = (id: string) => `${CDN}/q_auto/1kmonos/${id}.mp4`;
-const poster = (id: string, w: number) => `${CDN}/so_2.2,w_${w},q_auto/1kmonos/${id}.jpg`;
+const poster = (id: string, w: number) => `${CDN}/so_3,w_${w},q_auto/1kmonos/${id}.jpg`;
 
 /** Vídeos alojados en Cloudinary. Se generan con media/render.mjs a partir de media/video.html. */
 export const VIDEOS: VideoItem[] = [
-  { id: "reel-monos-vertical", title: "¿Buena idea o suerte?", text: "Qué son los monos y por qué son el listón que hay que superar.", format: "vertical", seconds: 27, url: video("reel-monos-vertical"), poster: poster("reel-monos-vertical", 540) },
-  { id: "reel-caso-real-vertical", title: "Un corto en Ethereum con 50 € de mentira", text: "Un caso real del 19 de noviembre de 2026, paso a paso en el playground.", format: "vertical", seconds: 33, url: video("reel-caso-real-vertical"), poster: poster("reel-caso-real-vertical", 540) },
+  { id: "reel-monos-vertical", title: "¿Buena idea o suerte?", text: "Qué son los monos y por qué son el listón que hay que superar.", format: "vertical", seconds: 42, url: video("reel-monos-vertical"), poster: poster("reel-monos-vertical", 540) },
+  { id: "reel-caso-real-vertical", title: "Un corto en Ethereum con 50 € de mentira", text: "Un caso real del 19 de noviembre de 2026, paso a paso en el playground.", format: "vertical", seconds: 51, url: video("reel-caso-real-vertical"), poster: poster("reel-caso-real-vertical", 540) },
+  { id: "guia-primera-operacion-vertical", title: "Tu primera operación, con 50 € de mentira", text: "Largo, corto, apalancamiento y liquidación, con las cuentas en euros.", format: "vertical", seconds: 61, url: video("guia-primera-operacion-vertical"), poster: poster("guia-primera-operacion-vertical", 540) },
   { id: "tutorial-recorrido", title: "Cómo usar 1K Monos en un minuto", text: "Recorrido por el ranking, las posiciones, el playground, el simulador, los avisos y el MCP.", format: "horizontal", seconds: 44, url: video("tutorial-recorrido"), poster: poster("tutorial-recorrido", 960) },
-  { id: "reel-monos-horizontal", title: "¿Buena idea o suerte? (pantalla ancha)", text: "El mismo vídeo de los monos, en formato de escritorio.", format: "horizontal", seconds: 27, url: video("reel-monos-horizontal"), poster: poster("reel-monos-horizontal", 960) },
-  { id: "reel-caso-real-horizontal", title: "Un corto en Ethereum (pantalla ancha)", text: "El caso real, en formato de escritorio.", format: "horizontal", seconds: 33, url: video("reel-caso-real-horizontal"), poster: poster("reel-caso-real-horizontal", 960) },
+  { id: "reel-monos-horizontal", title: "¿Buena idea o suerte? (pantalla ancha)", text: "El mismo vídeo de los monos, en formato de escritorio.", format: "horizontal", seconds: 42, url: video("reel-monos-horizontal"), poster: poster("reel-monos-horizontal", 960) },
+  { id: "reel-caso-real-horizontal", title: "Un corto en Ethereum (pantalla ancha)", text: "El caso real, en formato de escritorio.", format: "horizontal", seconds: 51, url: video("reel-caso-real-horizontal"), poster: poster("reel-caso-real-horizontal", 960) },
+  { id: "guia-primera-operacion-horizontal", title: "Tu primera operación (pantalla ancha)", text: "La guía con números, en formato de escritorio.", format: "horizontal", seconds: 61, url: video("guia-primera-operacion-horizontal"), poster: poster("guia-primera-operacion-horizontal", 960) },
+];
+
+/** Guías cortas con cantidades en euros. Los números salen de las reglas del playground. */
+export const MONEY_GUIDES: { title: string; steps: string[]; result: string }[] = [
+  {
+    title: "Tu primer largo, con 50 €",
+    steps: ["Abre el playground y elige Bitcoin.", "Pulsa «Largo · sube».", "Escribe 50 y deja el apalancamiento en 1×.", "Pulsa «Abrir largo en BTC» y avanza una semana."],
+    result: "Si Bitcoin sube un 10 %, tus 50 € pasan a 55 €. Si baja un 10 %, a 45 €. Lo máximo que puedes perder son tus 50 €.",
+  },
+  {
+    title: "Tu primer corto, con 50 €",
+    steps: ["Elige Tesla.", "Pulsa «Corto · baja».", "Escribe 50, con 1×.", "Pulsa «Abrir corto en TSLA» y avanza unos días."],
+    result: "Aquí es al revés: si Tesla baja un 10 %, ganas 5 €. Si sube un 10 %, pierdes 5 €. Estar en corto cuesta un poco cada día: con 50 €, alrededor de 1 céntimo.",
+  },
+  {
+    title: "Qué cambia con 5×",
+    steps: ["Repite el largo en Bitcoin con 50 €.", "Esta vez marca 5×: operas con 250 €.", "Mira la línea «Te liquidan si llega a».", "Avanza el tiempo y observa cómo se mueve tu patrimonio."],
+    result: "El mismo 10 % ahora son 25 €, a favor o en contra. Y si el precio baja un 11 %, se cierra todo y de tus 50 € quedan unos 22 €.",
+  },
+  {
+    title: "Empieza con 200 € y reparte",
+    steps: ["Deja el saldo en 200 €.", "Abre cuatro posiciones de 50 € en activos distintos, sin apalancamiento.", "Mezcla: por ejemplo dos largos y dos cortos.", "Avanza un mes y mira «Operaciones cerradas» y los costes pagados."],
+    result: "Repartir no garantiza ganar, pero un solo error ya no se lleva toda la cuenta. Abrir y cerrar las cuatro te cuesta unos 20 céntimos en total.",
+  },
 ];

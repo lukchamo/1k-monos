@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CHAPTERS, VIDEOS, type VideoItem } from "@/lib/tutorial";
+import { CHAPTERS, MONEY_GUIDES, VIDEOS, type VideoItem } from "@/lib/tutorial";
+import { MoneyGuide } from "@/components/MoneyGuide";
 import { TutorialPlayer } from "@/components/TutorialPlayer";
 import { SITE } from "@/lib/site";
 
@@ -21,7 +22,7 @@ function Video({ v }: { v: VideoItem }) {
         <p className="text-sm text-ink-2">{v.text}</p>
         <p className="flex flex-wrap gap-x-3 text-xs text-ink-3">
           <span className="num">{v.seconds} s</span>
-          <span>Sin sonido, con texto en pantalla</span>
+          <span>Con voz y texto en pantalla</span>
           <a href={v.url} download className="underline underline-offset-2 hover:text-ink">Descargar</a>
         </p>
       </figcaption>
@@ -43,6 +44,26 @@ export default function TutorialsPage() {
         </p>
       </header>
 
+      <section className="space-y-4" aria-labelledby="t-dinero">
+        <div className="max-w-3xl space-y-1.5">
+          <h2 id="t-dinero" className="text-2xl font-semibold tracking-tight">Lo más fácil: míralo en euros</h2>
+          <p className="text-ink-2">Elige cuánto pones y mueve el precio. Verás cuánto dinero tendrías, cuánto cuesta y cuándo te liquidarían.</p>
+        </div>
+        <MoneyGuide />
+        <div className="grid gap-4 md:grid-cols-2">
+          {MONEY_GUIDES.map((g) => (
+            <article key={g.title} className="card space-y-3 p-4 sm:p-5">
+              <h3 className="font-medium">{g.title}</h3>
+              <ol className="list-decimal space-y-1 pl-5 text-sm text-ink-2">
+                {g.steps.map((t) => <li key={t}>{t}</li>)}
+              </ol>
+              <p className="rounded-lg bg-surface-2 p-3 text-sm text-ink">{g.result}</p>
+            </article>
+          ))}
+        </div>
+        <Link href="/playground" className="inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-brand-ink hover:brightness-110">Hacerlo en el playground →</Link>
+      </section>
+
       <section className="space-y-4" aria-labelledby="t-interactivo">
         <h2 id="t-interactivo" className="text-2xl font-semibold tracking-tight">Tutorial interactivo</h2>
         <TutorialPlayer chapters={CHAPTERS} />
@@ -53,12 +74,13 @@ export default function TutorialsPage() {
           <h2 id="t-cortos" className="text-2xl font-semibold tracking-tight">Vídeos cortos</h2>
           <p className="text-ink-2">Para ver en el móvil o compartir. Los datos son los del experimento real.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(2,minmax(0,18rem))_minmax(0,1fr)]">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {vertical.map((v) => <Video key={v.id} v={v} />)}
-          <div className="card flex flex-col justify-center gap-3 p-5 sm:col-span-2 lg:col-span-1">
+          <div className="card flex flex-col justify-center gap-3 p-5 sm:col-span-2 lg:col-span-3">
             <h3 className="font-medium">Qué cuenta cada uno</h3>
             <ul className="list-disc space-y-2 pl-5 text-sm text-ink-2">
               <li><strong className="text-ink">Los monos.</strong> Soltamos 2.000 monos a invertir al azar y 28 inversionistas con reglas. El mejor inversionista ganó un 6,2 %; el mejor de 28 monos, un 27,3 % por pura suerte.</li>
+              <li><strong className="text-ink">Tu primera operación.</strong> Largo, corto, apalancamiento y liquidación con 50 € de mentira, con las cuentas en euros.</li>
               <li><strong className="text-ink">Un caso real.</strong> El 19 de noviembre de 2026, 17 de 28 inversionistas estaban en corto en Ethereum. Al cierre siguiente, ese corto ganó un 7,7 %. Un día no demuestra nada, y el vídeo lo dice.</li>
             </ul>
             <Link href="/playground?activo=ETH-USD&lado=corto" className="self-start rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-brand-ink hover:brightness-110">Repetir el caso en el playground →</Link>
@@ -69,7 +91,7 @@ export default function TutorialsPage() {
       <section className="space-y-4" aria-labelledby="t-ancho">
         <div className="max-w-3xl space-y-1.5">
           <h2 id="t-ancho" className="text-2xl font-semibold tracking-tight">Para pantalla grande</h2>
-          <p className="text-ink-2">El recorrido completo por la plataforma y los dos vídeos anteriores en formato ancho.</p>
+          <p className="text-ink-2">El recorrido completo por la plataforma y los vídeos anteriores en formato ancho.</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {horizontal.map((v, i) => (

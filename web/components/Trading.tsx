@@ -155,7 +155,7 @@ export function Trading() {
   const size = amount * lev;
   const room = Math.max(0, s.equity * R.maxLeverage - s.exposure);
   const draft = price ? { side, size, entry: price } : null;
-  const liq = draft && size > 0 ? liquidationPrice(account, draft, prices, R, size) : null;
+  const liq = draft && size > 0 ? liquidationPrice(account, draft, prices, R) : null;
 
   const run = (f: () => Account, okText: string) => {
     try {

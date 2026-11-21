@@ -8,7 +8,8 @@
   Cada vídeo es una lista de escenas. Una línea de tiempo determinística (setT) coloca cada elemento
   según el segundo exacto, así que el mismo archivo sirve para verlo en el navegador (?v=reel1&play=1)
   y para grabarlo fotograma a fotograma con media/render.mjs.
-  Vídeos: ?v=reel1 (los monos) · ?v=reel2 (caso real en el playground) · ?v=tour (recorrido).
+  Vídeos: ?v=reel1 (los monos) · ?v=reel2 (caso real) · ?v=guia (primera operación con números) · ?v=tour (recorrido).
+  Con ?dur=3.2,5.1,… se ajusta la duración de cada escena a la narración (lo usa media/render.mjs).
 -->
 <style>
   :root { --bg:#0a0c0f; --card:#11151a; --line:#232a33; --ink:#eef1f5; --ink2:#a7b0bd; --ink3:#717c8b; --brand:#ffd84d; --up:#4fd68a; --down:#ff6b6b; }
@@ -73,6 +74,29 @@ const FAM = [["Tendencia","#5fb2ff"],["Elástico","#ffd84d"],["Cazador","#ff9a52
 const monkeys = (n) => `<div class="monkeys">${Array.from({length:n},(_, i) => `<svg viewBox="0 0 32 32" data-at="${(0.25 + i * 0.011).toFixed(3)}" data-fx="pop"><use href="#mono"/></svg>`).join("")}</div>`;
 
 const VIDEOS = {
+  // Guía fácil con dinero: los mismos números de web/lib/paper.ts (reglas supuestas del playground)
+  guia: [
+    { dur: 4, html: `<p class="eyebrow" data-at="0.1">Guía fácil · con números</p><h1 data-at="0.3">Tu primera operación, con <span class="y">50 € de mentira</span></h1>` },
+    { dur: 6, html: `<p class="eyebrow" data-at="0.1">Largo</p><h2 data-at="0.3">Ganas si <span class="g">sube</span></h2>
+      <div class="card" data-at="1"><div class="row"><span>Pones</span><b class="num">50 €</b></div></div>
+      <div class="card" data-at="2"><div class="row"><span>Sube un 10 %</span><b class="num g">55 € &nbsp;(+5 €)</b></div></div>
+      <div class="card" data-at="3.4"><div class="row"><span>Baja un 10 %</span><b class="num r">45 € &nbsp;(−5 €)</b></div></div>` },
+    { dur: 6, html: `<p class="eyebrow" data-at="0.1">Corto</p><h2 data-at="0.3">Ganas si <span class="r">baja</span></h2>
+      <div class="card" data-at="1"><div class="row"><span>Pones</span><b class="num">50 €</b></div></div>
+      <div class="card" data-at="2"><div class="row"><span>Baja un 10 %</span><b class="num g">55 € &nbsp;(+5 €)</b></div></div>
+      <div class="card" data-at="3.4"><div class="row"><span>Sube un 10 %</span><b class="num r">45 € &nbsp;(−5 €)</b></div></div>` },
+    { dur: 7, html: `<p class="eyebrow" data-at="0.1">Apalancamiento 5×</p><h2 data-at="0.3">Pones <span class="num">50 €</span>, operas con <span class="y num">250 €</span></h2>
+      <div class="card" data-at="2.4"><div class="row"><span>El mismo 10 % a favor</span><b class="num g">+25 €</b></div></div>
+      <div class="card" data-at="3.8"><div class="row"><span>El mismo 10 % en contra</span><b class="num r">−25 €</b></div></div>
+      <p data-at="5">Ya no son 5 €. Son 25.</p>` },
+    { dur: 5.5, html: `<p class="eyebrow" data-at="0.1">Liquidación</p><h2 data-at="0.3">Con 5×, un <span class="r num">11 %</span> en contra lo cierra todo</h2><div class="big num r" data-at="1.6">50 € → 22 €</div><p data-at="3">Pierdes más de la mitad de lo que pusiste.</p>` },
+    { dur: 7, html: `<p class="eyebrow" data-at="0.1">¿Cuánto cuesta?</p>
+      <div class="card" data-at="0.5"><div class="row"><span>Comisión por orden</span><b class="num g">0 €</b></div></div>
+      <div class="card" data-at="1.6"><div class="row"><span>Abrir y cerrar 50 €</span><b class="num">≈ 0,05 €</b></div></div>
+      <div class="card" data-at="3.2"><div class="row"><span>Préstamo del 5×, por día</span><b class="num">≈ 0,04 €</b></div></div>
+      <p data-at="4.6">Costes estimados para una cuenta sin comisión.</p>` },
+    { dur: 4.5, html: `<h1 data-at="0.1">Practícalo primero <span class="y">con dinero ficticio</span></h1><span class="cta" data-at="1.6" data-fx="pop">1kmonos.com/playground</span>` },
+  ],
   reel1: [
     { dur: 3.6, html: `<p class="eyebrow" data-at="0.1">Experimento abierto</p><h1 data-at="0.3">¿Tu idea de inversión es buena… <span class="y">o tuviste suerte?</span></h1>` },
     { dur: 4.6, html: `<h2 data-at="0.1">Soltamos <span class="y num">2.000</span> monos a invertir al azar</h2>${monkeys(160)}<p data-at="2.4">Compran y venden tirando una moneda. Con comisiones, como todo el mundo.</p>` },
@@ -117,7 +141,10 @@ const VIDEOS = {
 
 // ───────────────────────── motor ─────────────────────────
 const q = new URLSearchParams(location.search);
-const scenes = VIDEOS[q.get("v")] ?? VIDEOS.reel1;
+const scenes = (VIDEOS[q.get("v")] ?? VIDEOS.reel1).map((s) => ({ ...s }));
+// la narración manda: si llegan duraciones por escena, sustituyen a las del guion
+const durs = (q.get("dur") ?? "").split(",").map(Number).filter((n) => n > 0);
+if (durs.length === scenes.length) scenes.forEach((s, i) => (s.dur = durs[i]));
 const stage = document.getElementById("stage");
 const FADE = 0.35;
 let start = 0;

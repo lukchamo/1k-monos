@@ -85,7 +85,7 @@ Lee [CONTRIBUTING.md](CONTRIBUTING.md). Lo más útil: proponer un inversionista
 
 ## Documentación
 
-[Algoritmos](docs/ALGORITMOS.md) · [Decisiones](docs/DECISIONES.md) · [Seguridad y guardarraíles](docs/SEGURIDAD.md) · [Despliegue en Cloudflare](docs/DESPLIEGUE.md) · [Dominios](docs/DOMINIOS.md) · [PRD](docs/PRD.md) · [Spec](docs/SPEC.md) · [MCP](docs/MCP.md)
+[Algoritmos](docs/ALGORITMOS.md) · [Decisiones](docs/DECISIONES.md) · [Seguridad y guardarraíles](docs/SEGURIDAD.md) · [Despliegue en Cloudflare](docs/DESPLIEGUE.md) · [Dominios](docs/DOMINIOS.md) · [Brókers con API o MCP](docs/BROKERS.md) · [PRD](docs/PRD.md) · [Spec](docs/SPEC.md) · [MCP](docs/MCP.md)
 
 ## Aviso
 

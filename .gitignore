@@ -14,3 +14,4 @@ __pycache__/
 cloudflare-env.d.ts
 *.tsbuildinfo
 media/out/
+media/voice/raw-*.mp3

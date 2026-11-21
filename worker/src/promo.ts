@@ -6,11 +6,12 @@ import { DISCLAIMER } from "./guard";
 
 const CDN = "https://res.cloudinary.com/dh26q79sh/video/upload";
 const video = (id: string) => `${CDN}/q_auto/1kmonos/${id}.mp4`;
-const poster = (id: string) => `${CDN}/so_2.2,w_560,q_auto/1kmonos/${id}.jpg`;
+const poster = (id: string) => `${CDN}/so_3,w_560,q_auto/1kmonos/${id}.jpg`;
 
 export const PROMO_VIDEOS = [
   { id: "reel-monos-vertical", kind: "Reel", title: "¿Buena idea o suerte?", text: "2.000 monos invierten al azar contra 28 inversionistas con reglas. El mejor inversionista ganó un 6,2 %; el mejor de 28 monos, un 27,3 % por pura suerte.", wide: "reel-monos-horizontal" },
   { id: "reel-caso-real-vertical", kind: "Reel", title: "Un corto en Ethereum con 50 € de mentira", text: "Caso real del 19 de noviembre de 2026: 17 de 28 inversionistas en corto en Ethereum. Al cierre siguiente, +7,7 %. Y por qué un día no demuestra nada.", wide: "reel-caso-real-horizontal" },
+  { id: "guia-primera-operacion-vertical", kind: "Guía fácil", title: "Tu primera operación, con 50 € de mentira", text: "Largo, corto, apalancamiento y liquidación, con las cuentas en euros.", wide: "guia-primera-operacion-horizontal" },
   { id: "tutorial-recorrido", kind: "Tutorial", title: "Cómo usar 1K Monos en un minuto", text: "Recorrido por el ranking, las posiciones, el playground, el simulador, los avisos y el MCP.", wide: null },
 ] as const;
 
@@ -27,7 +28,7 @@ export function renderPromo(site: string): { subject: string; text: string; html
     "",
     "CÓMO USARLOS",
     "1. Abre cada enlace y pulsa «Descargar» en el reproductor (o mantén pulsado el vídeo en el móvil).",
-    "2. Los dos reels van en vertical para Instagram, TikTok o Shorts. No llevan sonido: añade música desde la propia app.",
+    "2. Los reels van en vertical para Instagram, TikTok o Shorts. Llevan voz en off; puedes añadir música de fondo desde la propia app.",
     "3. En el texto de la publicación pon el enlace 1kmonos.com y deja claro que es un experimento con dinero ficticio.",
     "",
     "Todos los datos de los vídeos son del experimento real. No es una recomendación de inversión.",
@@ -71,7 +72,7 @@ ${PROMO_VIDEOS.map(card).join("")}
 ${h2("Cómo usarlos")}
 <tr><td style="padding:0 24px"><ol style="margin:0;padding-left:20px;font:14px/1.7 system-ui,sans-serif;color:${C.ink}">
   <li>Abre cada vídeo y pulsa «Descargar» en el reproductor. En el móvil, mantén pulsado el vídeo.</li>
-  <li>Los dos reels van en vertical para Instagram, TikTok o Shorts. No llevan sonido: añade la música desde la propia app.</li>
+  <li>Los reels van en vertical para Instagram, TikTok o Shorts. Llevan voz en off; puedes añadir música de fondo desde la propia app.</li>
   <li>En el texto de la publicación pon <b>1kmonos.com</b> y di que es un experimento con dinero ficticio.</li>
 </ol></td></tr>
 <tr><td style="padding:22px 24px"><a href="${site}" style="color:${C.brand};font:600 14px system-ui,sans-serif">Ver el laboratorio →</a></td></tr>
