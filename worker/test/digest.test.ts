@@ -18,9 +18,9 @@ describe("resumen · llamadas de consenso", () => {
     expect(pickCalls("d", a, {})).toEqual(pickCalls("d", [...a].reverse(), {}));
     expect(pickCalls("d", a, {}).map((c) => c.symbol)).toEqual(["AMD", "MSFT", "NVDA"]);
   });
-  it("nunca más de seis", () => {
+  it("nunca más de cinco", () => {
     const many = "ABCDEFGHIJ".split("").flatMap((s) => rows(s, 28, 0, 0));
-    expect(pickCalls("d", many, {})).toHaveLength(6);
+    expect(pickCalls("d", many, {})).toHaveLength(5);
   });
 });
 

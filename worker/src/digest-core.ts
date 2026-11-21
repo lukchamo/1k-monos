@@ -8,8 +8,10 @@
  */
 import { DISCLAIMER } from "./guard";
 
-export const CALL_THRESHOLD = 0.5; // al menos la mitad de los inversionistas, netos, en la misma dirección
-export const MAX_CALLS = 6;
+// Diferencia neta mínima entre largos y cortos, sobre el total. El elenco está partido a propósito
+// (tendencia contra reversión), así que el acuerdo rara vez pasa de un tercio: con 0,5 no salía ninguna.
+export const CALL_THRESHOLD = 0.25;
+export const MAX_CALLS = 5;
 
 export interface Call {
   date: string;
@@ -69,7 +71,7 @@ export function renderDigest(d: Digest, siteUrl: string): { subject: string; tex
           `${c.entry_close ? `, con el cierre en ${c.entry_close}` : ""}. La verificamos con el cierre de la próxima sesión.`,
       );
   } else {
-    lines.push("Hoy no hay ningún activo con una mayoría clara: los inversionistas no se ponen de acuerdo.");
+    lines.push("Hoy no hay ningún activo donde una dirección gane con claridad: los inversionistas están repartidos.");
   }
   lines.push("");
   if (d.verified.length) {
@@ -87,7 +89,7 @@ export function renderDigest(d: Digest, siteUrl: string): { subject: string; tex
 ${
   d.calls.length
     ? `<h3 style="margin:18px 0 6px">Posiciones analizadas</h3><table style="border-collapse:collapse;width:100%;font-size:14px">${d.calls
-        .map((c) => row([`<b>${esc(c.symbol)}</b>`, `<span style="color:${c.direction > 0 ? "#15803d" : "#b91c1c"}">en ${side(c.direction)}</span>`, `${c.direction > 0 ? c.n_long : c.n_short} de ${c.n_total} coinciden`, c.entry_close ? `cierre ${c.entry_close}` : ""]))
+        .map((c) => row([`<b>${esc(c.symbol)}</b>`, `<span style="color:${c.direction > 0 ? "#15803d" : "#b91c1c"}">en ${side(c.direction)}</span>`, `${c.n_long} en largo · ${c.n_short} en corto · de ${c.n_total}`, c.entry_close ? `cierre ${c.entry_close}` : ""]))
         .join("")}</table><p style="font-size:13px;color:#555">Las verificamos con el cierre de la próxima sesión.</p>`
     : "<p>Hoy no hay ningún activo con una mayoría clara.</p>"
 }
