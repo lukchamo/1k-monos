@@ -162,8 +162,10 @@ export async function allow(env: Env, req: Request, bucket: Bucket): Promise<boo
   if (!ip) return true;
   try {
     return (await rl.limit({ key: `${bucket}:${ip}` })).success;
-  } catch {
-    return true; // si el limitador falla, no tiramos la API de lectura
+  } catch (err) {
+    // si el limitador falla, no tiramos la API de lectura; pero queda registrado
+    console.warn(JSON.stringify({ level: "warn", message: "limitador de ritmo no disponible", bucket, error: String(err) }));
+    return true;
   }
 }
 

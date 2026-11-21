@@ -192,6 +192,11 @@ export default {
 
   async scheduled(controller, env, ctx): Promise<void> {
     if (controller.cron === CRON_NEWS) {
+      // sin clave de búsqueda no hay nada que escuchar: se avisa una vez por ciclo, no una por consulta
+      if (!env.FIRECRAWL_API_KEY) {
+        console.warn(JSON.stringify({ level: "warn", message: "ingesta de noticias en pausa: falta el secreto FIRECRAWL_API_KEY" }));
+        return;
+      }
       const s = await sessions(env);
       for (const q of NEWS_QUERIES) ctx.waitUntil(ingestNews(env, q, s).catch((e) => console.error("noticias", q, e)));
       return;
