@@ -158,7 +158,9 @@ export async function allow(env: Env, req: Request, bucket: Bucket): Promise<boo
   if (!rl) return true;
   // Cloudflare pone cf-connecting-ip en toda petición que llega de internet y el cliente no puede
   // quitarla. Si falta, la llamada viene de otro Worker por service binding (la web): no se limita.
-  const ip = req.headers.get("cf-connecting-ip");
+  // Para las escrituras públicas que la web reenvía (suscripciones), la web pasa la IP del visitante
+  // en x-client-ip; solo se atiende cuando no hay cf-connecting-ip, es decir, en llamadas internas.
+  const ip = req.headers.get("cf-connecting-ip") ?? (bucket === "write" ? req.headers.get("x-client-ip") : null);
   if (!ip) return true;
   try {
     return (await rl.limit({ key: `${bucket}:${ip}` })).success;

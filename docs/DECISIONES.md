@@ -24,6 +24,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 
 | D-18 | **Resumen diario solo para el autor.** Tras cada cierre, el laboratorio envía por correo a una única dirección (secreto `DIGEST_TO`) los activos donde largos y cortos se separan al menos un 25 % del elenco (máximo cinco), y verifica las llamadas anteriores con el cierre siguiente. | El autor quiere seguir el experimento sin abrir la web, y comprobar si el consenso acierta. | No es un servicio de señales: un destinatario, nunca usuarios (D-16). El historial de aciertos sí es público en `/v1/calls`, como un resultado más del experimento. Abrirlo a terceros exigiría consulta legal previa. |
 
+| D-19 | **Avisos del navegador abiertos a cualquiera** (decisión del autor, 21-nov-2026). Quien visita la web puede activar un aviso cuando el laboratorio registra llamadas nuevas. | El autor quiere enterarse en el móvil sin abrir la web. Las llamadas ya son públicas en `/v1/calls`. | El texto del aviso solo describe y siempre dice que no es una recomendación. Aun así, avisar a terceros de posiciones en largo y corto se acerca a publicar señales: **pendiente de consulta legal** (D-16) antes de darle difusión. No se guarda ningún dato personal: solo la dirección técnica que da el navegador. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.

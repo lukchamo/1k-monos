@@ -13,6 +13,8 @@ const csp = [
   "img-src 'self' data:",
   "font-src 'self'",
   "connect-src 'self'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
   "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",

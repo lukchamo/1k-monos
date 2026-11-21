@@ -48,7 +48,7 @@ async function loadLab(): Promise<Lab> {
     const d = await getJson<LabPayload>(f, "/v1/lab");
     // una API recién desplegada y sin corridas todavía no tiene nada que enseñar: mejor la foto
     if (!d.ranking?.rows?.length) return { ...SNAPSHOT, live: false };
-    return { live: true, taken_at: d.status.now, status: d.status, ranking: d.ranking, curves: d.curves, news: d.news, positions: d.positions, investors: d.investors, universe: d.universe };
+    return { live: true, taken_at: d.status.now, status: d.status, ranking: d.ranking, curves: d.curves, news: d.news, positions: d.positions, investors: d.investors, universe: d.universe, calls: d.calls };
   } catch (err) {
     console.error(JSON.stringify({ level: "warn", message: "API del laboratorio no disponible, sirviendo la foto", error: String(err) }));
     return { ...SNAPSHOT, live: false };
@@ -104,4 +104,24 @@ export async function getDecision(investor: string, symbol: string): Promise<Dec
 
 export function staticInvestorIds(): string[] {
   return SNAPSHOT.investors.map((i) => i.id);
+}
+
+/** llamada interna a la API para rutas de la web que reenvían (suscripciones a avisos) */
+export async function labFetch(path: string, init?: { method?: string; body?: string; clientIp?: string | null }): Promise<Response | null> {
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (init?.clientIp) headers["x-client-ip"] = init.clientIp;
+  try {
+    const { env } = await getCloudflareContext({ async: true });
+    const svc = (env as { LAB_API?: { fetch: typeof fetch } }).LAB_API;
+    if (svc) return await svc.fetch(`https://lab.internal${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(TIMEOUT_MS) });
+  } catch {
+    /* sin binding: cae a la URL */
+  }
+  const base = process.env.LAB_API_URL;
+  if (!base) return null;
+  try {
+    return await fetch(`${base}${path}`, { method: init?.method ?? "GET", headers, body: init?.body, signal: AbortSignal.timeout(TIMEOUT_MS), cache: "no-store" });
+  } catch {
+    return null;
+  }
 }

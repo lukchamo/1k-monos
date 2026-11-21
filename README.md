@@ -43,7 +43,7 @@ Necesitas Node 22 o superior. Python 3.11+ solo si quieres regenerar la referenc
 ```bash
 # 1) la API
 cd worker && npm install
-npm run check                 # typecheck + 213 tests (paridad con Python, sin mirar el futuro, guardarraíles)
+npm run check                 # typecheck + 218 tests (paridad con Python, sin mirar el futuro, guardarraíles)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local             # http://localhost:8787
 

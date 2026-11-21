@@ -23,5 +23,8 @@
     "wrangler": "^4.166.0"
   },
   "type": "module",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@block65/webcrypto-web-push": "^2.0.0"
+  }
 }

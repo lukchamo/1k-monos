@@ -70,6 +70,24 @@ export interface Universe {
   economies: Record<string, string[]>;
   indicators: Record<string, string>;
 }
+export interface CallRow {
+  date: string;
+  symbol: string;
+  direction: number;
+  score: number;
+  n_long: number;
+  n_short: number;
+  n_total: number;
+  entry_close: number | null;
+  verified_date: string | null;
+  exit_close: number | null;
+  ret: number | null;
+  hit: number | null;
+}
+export interface Calls {
+  record: { total: number; hits: number; avg_ret: number | null } | null;
+  calls: CallRow[];
+}
 export interface Lab {
   /** true si los datos vienen de la API en este render; false si es la foto empaquetada */
   live: boolean;
@@ -81,4 +99,5 @@ export interface Lab {
   positions: Positions;
   investors: Investor[];
   universe: Universe;
+  calls?: Calls;
 }

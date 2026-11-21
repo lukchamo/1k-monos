@@ -14,6 +14,7 @@ import { ingestNews } from "./ingest/news";
 import { coinGecko, ingestPrices, twelveData } from "./ingest/prices";
 import { mcp } from "./mcp";
 import { sendDigest, trackRecord } from "./digest";
+import { notifyAll, subscribe, unsubscribe } from "./push";
 
 const KNOWN_SYMBOLS = new Set<string>([...UNIVERSE, INDICATORS.vix, INDICATORS.tnx]);
 const KNOWN_INVESTORS = new Set(LINEUP.map((s) => s.id));
@@ -120,11 +121,11 @@ async function route(req: Request, env: Env): Promise<Response> {
 
     // todo lo que pinta la web en una sola llamada: un viaje a D1 por render en vez de siete
     if (p === "/v1/lab") {
-      const [status, rank, curve, news, positions, investors] = await memo("lab", SHORT, () =>
-        Promise.all([labStatus(env.DB), ranking(env.DB), curves(env.DB), latestNews(env.DB, 30), paperPositions(env.DB), lineup(env)]),
+      const [status, rank, curve, news, positions, investors, calls] = await memo("lab", SHORT, () =>
+        Promise.all([labStatus(env.DB), ranking(env.DB), curves(env.DB), latestNews(env.DB, 30), paperPositions(env.DB), lineup(env), trackRecord(env.DB, 30)]),
       );
       return json(
-        { status: { ...status, engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString() }, ranking: rank, curves: curve, news, positions, investors, universe: { segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, aviso: DISCLAIMER },
+        { status: { ...status, engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString() }, ranking: rank, curves: curve, news, positions, investors, calls, universe: { segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, aviso: DISCLAIMER },
         200,
         "short",
       );
@@ -134,6 +135,9 @@ async function route(req: Request, env: Env): Promise<Response> {
 
     // historial de llamadas de consenso y su verificación (público: es parte del experimento)
     if (p === "/v1/calls") return json({ ...(await memo("calls", SHORT, () => trackRecord(env.DB))), aviso: DISCLAIMER }, 200, "short");
+
+    // clave pública para suscribirse a los avisos del navegador
+    if (p === "/v1/push/key") return env.VAPID_PUBLIC_KEY ? json({ key: env.VAPID_PUBLIC_KEY }, 200, "long") : fail(503, "avisos sin configurar");
 
     if (p === "/v1/universe") return json({ segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, 200, "long");
 
@@ -187,7 +191,11 @@ async function route(req: Request, env: Env): Promise<Response> {
 
   // ── escritura: siempre con token y con límite propio ───────────────────────
   if (!(await allow(env, req, "write"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
-  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest") return fail(404, "no encontrado");
+  // suscripción a avisos: pública (no hay cuentas), acotada por el límite de escritura y la lista blanca de servicios
+  if (p === "/v1/push/subscribe") return json(await subscribe(env.DB, await readJson(req, 4096)));
+  if (p === "/v1/push/unsubscribe") return json(await unsubscribe(env.DB, await readJson(req, 4096)));
+
+  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test") return fail(404, "no encontrado");
   if (!(await tokenOk(req, env.MCP_TOKEN))) return fail(401, "no autorizado", { "www-authenticate": "Bearer" });
   const b = (await readJson(req)) as Record<string, unknown>;
   if (!b || typeof b !== "object" || Array.isArray(b)) throw new BadInput("el cuerpo debe ser un objeto JSON");
@@ -198,10 +206,14 @@ async function route(req: Request, env: Env): Promise<Response> {
     return json({ run_id: inst.id }, 202);
   }
 
+  if (p === "/v1/push/test")
+    return json(await notifyAll(env, { title: "1K Monos · prueba", body: "Los avisos funcionan. Te avisaremos cuando el laboratorio registre algo nuevo. Es un experimento, no una recomendación.", url: env.SITE_URL ?? "/", tag: "prueba" }));
+
   // resumen privado de una fecha: lo construye, verifica las llamadas anteriores y lo envía (send: false = vista previa)
   if (p === "/v1/digest") {
     const out = await sendDigest(env, v.date(b.date), b.send !== false);
     MEMO.delete("calls");
+    MEMO.delete("lab");
     return json(out);
   }
 

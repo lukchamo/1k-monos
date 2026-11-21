@@ -8,6 +8,8 @@ import { Heatmap } from "@/components/Heatmap";
 import { LivePulse } from "@/components/LivePulse";
 import { NewsCard } from "@/components/News";
 import { Ranking } from "@/components/Ranking";
+import { CallsTable } from "@/components/Calls";
+import { PushToggle } from "@/components/PushToggle";
 
 // ISR: la portada se regenera como mucho cada 5 minutos; entre medias se sirve desde la caché
 export const revalidate = 300;
@@ -113,6 +115,18 @@ export default async function Home() {
           </p>
         </div>
         {positions.rows.length ? <Heatmap positions={positions} investors={investors} universe={universe} /> : <p className="card p-6 text-ink-2">Todavía no hay decisiones registradas.</p>}
+      </section>
+
+      <section id="llamadas" className="scroll-mt-24 space-y-5">
+        <div className="max-w-3xl space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight">Dónde hay más acuerdo</h2>
+          <p className="text-ink-2">
+            Cuando los inversionistas en largo y en corto se separan con claridad en un activo, el laboratorio lo anota y lo comprueba con el cierre de la
+            sesión siguiente. Es una medida de si el acuerdo entre reglas sirve de algo, no una señal para operar.
+          </p>
+        </div>
+        <PushToggle />
+        {lab.calls?.calls.length ? <CallsTable data={lab.calls} /> : <p className="card p-5 text-sm text-ink-2">Todavía no hay llamadas registradas.</p>}
       </section>
 
       <section id="noticias" className="scroll-mt-24 space-y-5">

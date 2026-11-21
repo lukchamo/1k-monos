@@ -18,6 +18,7 @@ export interface Env {
   // vars
   DIGEST_FROM?: string; // remitente: debe ser de un dominio dado de alta en Email Service
   SITE_URL?: string;
+  VAPID_PUBLIC_KEY?: string; // clave pública de los avisos del navegador (no es secreta)
   TAXONOMY_VERSION: string;
   PROMPT_VERSION: string;
   AI_GATEWAY_ID: string;
@@ -27,5 +28,6 @@ export interface Env {
   FIRECRAWL_API_KEY?: string;
   TWELVE_DATA_API_KEY?: string;
   DIGEST_TO?: string; // único destinatario del resumen; secreto para no publicar un correo en el repo
+  VAPID_PRIVATE_KEY?: string; // firma los avisos del navegador
   MCP_TOKEN?: string; // las herramientas que escriben (correr_backtest) exigen este token
 }

@@ -68,6 +68,13 @@ Compromiso conocido: la CSP permite scripts en línea (`'unsafe-inline'`). Un no
 
 Una micro-interfaz es un JSON, no código. Solo puede elegir entre cuatro bloques y leer rutas de cuatro conjuntos de datos públicos. No admite HTML, scripts ni URLs. Tamaño, número de bloques y de vistas acotados. Una especificación que no valida se rechaza entera y se avisa en la página.
 
+## Guardarraíles de los avisos del navegador (`worker/src/push-core.ts`)
+
+- **Lista blanca de servicios de push** (Google, Mozilla, Apple, Microsoft). La dirección la manda el navegador del visitante y el Worker le hará peticiones: sin la lista sería una vía para hacernos llamar a cualquier servidor.
+- **Suscribirse es público pero acotado:** límite de escritura por IP (la web reenvía la IP del visitante), cuerpo de 4 KB como mucho, solo desde el mismo origen y un tope de 5.000 suscripciones.
+- **El aviso es texto fijo más símbolos del universo.** El service worker solo abre direcciones de la propia web.
+- **Sin datos personales:** se guarda la dirección técnica y las dos claves que entrega el navegador. Las suscripciones caducadas se borran solas.
+
 ## Observabilidad
 
 Los dos Workers tienen activados logs, logs de invocación y trazas (`observability` en sus `wrangler.jsonc`), con mapas de fuente subidos. Los errores se registran como JSON con nivel y ruta para poder filtrarlos en el panel de Cloudflare (Workers → Observability).

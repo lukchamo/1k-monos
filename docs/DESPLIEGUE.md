@@ -104,6 +104,17 @@ curl -X POST https://<tu-api>/v1/digest -H "authorization: Bearer $MCP_TOKEN" \
 
 Sin precios nuevos (falta `TWELVE_DATA_API_KEY`) no hay cierres nuevos y por tanto no hay correos automáticos.
 
+## 6 ter. Avisos del navegador (Web Push)
+
+La web ofrece «Avísame cuando detecte algo». Las suscripciones se guardan en D1 (`push_subs`) y el aviso sale junto al correo, tras cada cierre con llamadas nuevas. Hace falta un par de claves VAPID: la pública va en `VAPID_PUBLIC_KEY` (`worker/wrangler.jsonc`) y la privada en el secreto `VAPID_PRIVATE_KEY`. Si cambias las claves, todas las suscripciones existentes dejan de funcionar.
+
+```bash
+# enviar un aviso de prueba a todos los suscritos
+curl -X POST https://<tu-api>/v1/push/test -H "authorization: Bearer $MCP_TOKEN" -H 'content-type: application/json' -d '{}'
+```
+
+En iPhone los avisos solo funcionan si la web está añadida a la pantalla de inicio.
+
 ## 7. Cloudflare Artifacts (experimental)
 
 Las micro-interfaces de `/experimentos` viven en un repositorio Git de Artifacts (plan Workers Paid, beta abierta): namespace `lab-1k-monos`, repositorio `microui`, rama `main`. La web lo lee con el binding `ARTIFACTS` de `web/wrangler.jsonc`; si falla, usa las vistas de `web/microui/`.

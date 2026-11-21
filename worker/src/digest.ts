@@ -1,6 +1,7 @@
 /** Resumen privado: la parte que toca D1 y el correo. La lógica pura vive en digest-core.ts. */
 import type { Env } from "./env";
 import { pickCalls, renderDigest, type Digest, type Verified } from "./digest-core";
+import { noticeFor, notifyAll } from "./push";
 
 export async function buildDigest(db: D1Database, date: string): Promise<Digest> {
   // 1) verificar las llamadas pendientes con la primera sesión completa posterior a cada una
@@ -56,11 +57,15 @@ export async function trackRecord(db: D1Database, limit = 60) {
 }
 
 /** construye y, si hay destinatario y remitente configurados, envía. Devuelve qué hizo. */
-export async function sendDigest(env: Env, date: string, send = true): Promise<{ digest: Digest; sent: boolean; reason?: string }> {
+export async function sendDigest(env: Env, date: string, send = true): Promise<{ digest: Digest; sent: boolean; reason?: string; push?: unknown }> {
   const digest = await buildDigest(env.DB, date);
   if (!send) return { digest, sent: false, reason: "solo vista previa" };
-  if (!env.EMAIL || !env.DIGEST_TO || !env.DIGEST_FROM) return { digest, sent: false, reason: "correo sin configurar (EMAIL, DIGEST_TO, DIGEST_FROM)" };
-  const m = renderDigest(digest, env.SITE_URL ?? "https://1k-monos-web.lc-45e.workers.dev");
+  const site = env.SITE_URL ?? "https://1k-monos-web.lc-45e.workers.dev";
+  // aviso del navegador a quien se suscribió en la web (solo si hay llamadas nuevas)
+  const notice = noticeFor(digest, site);
+  const push = notice ? await notifyAll(env, notice).catch((e) => ({ error: String(e) })) : { skipped: "sin llamadas nuevas" };
+  if (!env.EMAIL || !env.DIGEST_TO || !env.DIGEST_FROM) return { digest, sent: false, reason: "correo sin configurar (EMAIL, DIGEST_TO, DIGEST_FROM)", push };
+  const m = renderDigest(digest, site);
   await env.EMAIL.send({ to: env.DIGEST_TO, from: { email: env.DIGEST_FROM, name: "1K Monos" }, subject: m.subject, text: m.text, html: m.html });
-  return { digest, sent: true };
+  return { digest, sent: true, push };
 }

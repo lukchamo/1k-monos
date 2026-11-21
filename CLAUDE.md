@@ -49,7 +49,7 @@ python research/golden.py          # regenera shared/golden/*.json
 
 # worker
 cd worker && npm install
-npm run check                      # typecheck + 213 tests (paridad incluida)
+npm run check                      # typecheck + 218 tests (paridad incluida)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local                  # sin Workers AI (no requiere login); token MCP local: dev-token
 npx wrangler deploy --dry-run      # valida bindings y empaquetado

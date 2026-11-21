@@ -40,6 +40,8 @@
     // remitente provisional: un dominio ya dado de alta en la cuenta. Cambiar al dominio propio cuando exista
     "DIGEST_FROM": "laboratorio@unifyflow.app",
     "SITE_URL": "https://1k-monos-web.lc-45e.workers.dev",
+    // clave pública de los avisos del navegador (la privada es el secreto VAPID_PRIVATE_KEY)
+    "VAPID_PUBLIC_KEY": "BCf4AET_joE7_ft_ZrmiIwoi299FHDsMsNiSyLfCtA-IqReos5qN3wqYbS7jnENvbE0eKr6iIC6C-zClar5N8d4",
     "TAXONOMY_VERSION": "tax-1.0",
     "PROMPT_VERSION": "extract-1.0",
     "AI_GATEWAY_ID": "lab-inversionistas",
