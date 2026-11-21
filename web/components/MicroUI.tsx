@@ -31,7 +31,7 @@ function BlockView({ block, data }: { block: Block; data: unknown }) {
           {block.title ? <p className="text-xs text-ink-3">{block.title}</p> : null}
           <ul className="space-y-1.5">
             {items.map((it, i) => (
-              <li key={`${it.label}-${i}`} className="grid grid-cols-[minmax(0,9rem)_1fr_3.5rem] items-center gap-2 text-xs">
+              <li key={`${it.label}-${i}`} className="grid grid-cols-[minmax(0,7rem)_1fr_3.5rem] sm:grid-cols-[minmax(0,9rem)_1fr_3.5rem] items-center gap-2 text-xs">
                 <span className="truncate text-ink-2">{it.label}</span>
                 <span className="h-2 overflow-hidden rounded-full bg-flat" aria-hidden="true">
                   <span className={`block h-full rounded-full ${nums[i] >= 0 ? "bg-up" : "bg-down"}`} style={{ width: `${Math.min(100, (Math.abs(nums[i]) / scale) * 100)}%` }} />
@@ -70,7 +70,7 @@ export function MicroUICard({ ui, data }: { ui: MicroUI; data: unknown }) {
   const stats = ui.blocks.filter((b) => b.type === "stat");
   const rest = ui.blocks.filter((b) => b.type !== "stat");
   return (
-    <article className="card flex flex-col gap-4 p-5">
+    <article className="card flex min-w-0 flex-col gap-4 p-4 sm:p-5">
       <header className="space-y-1">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-medium">{ui.title}</h2>

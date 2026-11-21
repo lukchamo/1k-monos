@@ -43,7 +43,7 @@ Necesitas Node 22 o superior. Python 3.11+ solo si quieres regenerar la referenc
 ```bash
 # 1) la API
 cd worker && npm install
-npm run check                 # typecheck + 208 tests (paridad con Python, sin mirar el futuro, guardarraíles)
+npm run check                 # typecheck + 213 tests (paridad con Python, sin mirar el futuro, guardarraíles)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local             # http://localhost:8787
 
@@ -71,9 +71,10 @@ Sin API, la web sirve una foto empaquetada del experimento (`web/data/snapshot.j
 | `GET /v1/positions?date=` | Posiciones de paper trading por inversionista |
 | `GET /v1/pressure?symbol=&at=` | Presión de noticias de un activo |
 | `GET /v1/decisions?investor=&symbol=` | Por qué decidió un inversionista |
+| `GET /v1/calls` | Llamadas de consenso y su verificación al cierre siguiente |
 | `POST /mcp` | Servidor MCP (JSON-RPC) con cinco herramientas. Ver [docs/MCP.md](docs/MCP.md) |
 
-Las rutas que escriben (`POST /v1/backtest`, `POST /v1/decide`) exigen token.
+Las rutas que escriben (`POST /v1/backtest`, `POST /v1/decide`, `POST /v1/digest`) exigen token. Cómo conectar un asistente al MCP: [/mcp](https://1k-monos-web.lc-45e.workers.dev/mcp).
 
 ## Contribuir
 

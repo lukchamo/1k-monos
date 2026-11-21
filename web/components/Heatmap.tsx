@@ -17,11 +17,13 @@ export function Heatmap({ positions, investors, universe }: { positions: Positio
   const segments = Object.entries(universe.segments);
 
   return (
-    <div className="card overflow-x-auto p-4">
-      <table className="w-full min-w-[900px] table-fixed border-separate border-spacing-[3px] text-xs" aria-describedby="hm-leyenda">
+    <div className="card p-3 sm:p-4">
+      <p className="mb-2 text-xs text-ink-3 md:hidden">Desliza hacia los lados para ver todos los activos →</p>
+      <div className="relative overflow-x-auto">
+      <table className="w-full min-w-[820px] table-fixed border-separate border-spacing-[3px] text-xs" aria-describedby="hm-leyenda">
         <caption className="sr-only">Posición de cada inversionista en cada activo</caption>
         <colgroup>
-          <col className="w-44" />
+          <col className="w-32 sm:w-44" />
         </colgroup>
         <thead>
           <tr>
@@ -46,7 +48,7 @@ export function Heatmap({ positions, investors, universe }: { positions: Positio
             const pos = byId.get(inv.id);
             return (
               <tr key={inv.id}>
-                <th scope="row" className="whitespace-nowrap pr-3 text-left font-normal">
+                <th scope="row" className="sticky left-0 z-10 truncate bg-surface pr-2 text-left font-normal sm:pr-3">
                   <Link href={`/inversionistas/${inv.id}`} className="text-ink-2 hover:text-brand">
                     {inv.name}
                   </Link>
@@ -61,6 +63,7 @@ export function Heatmap({ positions, investors, universe }: { positions: Positio
           })}
         </tbody>
       </table>
+      </div>
       <div id="hm-leyenda" className="mt-4 flex flex-wrap gap-4 text-xs text-ink-2">
         <span className="flex items-center gap-1.5"><span className="size-3 rounded-[3px] bg-up" aria-hidden="true" />Comprado (largo)</span>
         <span className="flex items-center gap-1.5"><span className="size-3 rounded-[3px] bg-down" aria-hidden="true" />Vendido en corto</span>

@@ -15,7 +15,7 @@ function Sentiment({ v }: { v: number }) {
 export function NewsCard({ ev }: { ev: NewsItem }) {
   const dir = ev.signal?.direction ?? "";
   return (
-    <article className="card flex flex-col gap-3 p-4">
+    <article className="card flex min-w-0 flex-col gap-3 p-4">
       <header className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
         <span className={`rounded-full border px-2 py-0.5 ${DIR_TONE[dir] ?? "border-line text-ink-2"}`}>{directionLabel(dir)}</span>
         <span>{eventLabel(ev.event_type)}</span>

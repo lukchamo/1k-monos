@@ -13,6 +13,7 @@ import { lector, pressure, pressureBreakdown } from "./news/scoring";
 import { ingestNews } from "./ingest/news";
 import { coinGecko, ingestPrices, twelveData } from "./ingest/prices";
 import { mcp } from "./mcp";
+import { sendDigest, trackRecord } from "./digest";
 
 const KNOWN_SYMBOLS = new Set<string>([...UNIVERSE, INDICATORS.vix, INDICATORS.tnx]);
 const KNOWN_INVESTORS = new Set(LINEUP.map((s) => s.id));
@@ -131,6 +132,9 @@ async function route(req: Request, env: Env): Promise<Response> {
 
     if (p === "/v1/investors") return json(await memo("investors", LONG, () => lineup(env)), 200, "long");
 
+    // historial de llamadas de consenso y su verificación (público: es parte del experimento)
+    if (p === "/v1/calls") return json({ ...(await memo("calls", SHORT, () => trackRecord(env.DB))), aviso: DISCLAIMER }, 200, "short");
+
     if (p === "/v1/universe") return json({ segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, 200, "long");
 
     if (p === "/v1/ranking") {
@@ -183,7 +187,7 @@ async function route(req: Request, env: Env): Promise<Response> {
 
   // ── escritura: siempre con token y con límite propio ───────────────────────
   if (!(await allow(env, req, "write"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
-  if (p !== "/v1/backtest" && p !== "/v1/decide") return fail(404, "no encontrado");
+  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest") return fail(404, "no encontrado");
   if (!(await tokenOk(req, env.MCP_TOKEN))) return fail(401, "no autorizado", { "www-authenticate": "Bearer" });
   const b = (await readJson(req)) as Record<string, unknown>;
   if (!b || typeof b !== "object" || Array.isArray(b)) throw new BadInput("el cuerpo debe ser un objeto JSON");
@@ -192,6 +196,13 @@ async function route(req: Request, env: Env): Promise<Response> {
     const params = backtestParams(b);
     const inst = await env.BACKTEST.create({ params });
     return json({ run_id: inst.id }, 202);
+  }
+
+  // resumen privado de una fecha: lo construye, verifica las llamadas anteriores y lo envía (send: false = vista previa)
+  if (p === "/v1/digest") {
+    const out = await sendDigest(env, v.date(b.date), b.send !== false);
+    MEMO.delete("calls");
+    return json(out);
   }
 
   // decisiones de paper trading para una fecha (relanzar un día o rellenar huecos). Idempotente.
@@ -239,6 +250,8 @@ export default {
       await Promise.all(
         LINEUP.map((s) => env.INVESTOR.get(env.INVESTOR.idFromName(s.id)).decide(s.id, date).catch((e) => console.error(s.id, e))),
       );
+      // con todos decididos: llamadas de consenso, verificación de las anteriores y correo al autor
+      await sendDigest(env, date).catch((e) => console.error(JSON.stringify({ level: "error", message: "resumen diario", error: String(e) })));
     }
   },
 } satisfies ExportedHandler<Env>;

@@ -56,13 +56,13 @@ export function CurvesChart({ dates, series, defaults }: { dates: string[]; seri
   };
 
   return (
-    <div className="card p-4">
+    <div className="card p-3 sm:p-4">
       <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
         <button
           type="button"
           onClick={() => setPicked(null)}
           aria-pressed={picked === null}
-          className={`rounded-full border px-2.5 py-1 ${picked === null ? "border-brand text-brand" : "border-line text-ink-2 hover:text-ink"}`}
+          className={`rounded-full border px-3 py-1.5 sm:px-2.5 sm:py-1 ${picked === null ? "border-brand text-brand" : "border-line text-ink-2 hover:text-ink"}`}
         >
           Destacados
         </button>
@@ -72,7 +72,7 @@ export function CurvesChart({ dates, series, defaults }: { dates: string[]; seri
             type="button"
             onClick={() => setPicked(picked === f ? null : f)}
             aria-pressed={picked === f}
-            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${picked === f ? "border-ink text-ink" : "border-line text-ink-2 hover:text-ink"}`}
+            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 sm:px-2.5 sm:py-1 ${picked === f ? "border-ink text-ink" : "border-line text-ink-2 hover:text-ink"}`}
           >
             <span className="size-2 rounded-full" style={{ background: series.find((s) => s.family === f)?.color }} aria-hidden="true" />
             {f}
@@ -80,9 +80,10 @@ export function CurvesChart({ dates, series, defaults }: { dates: string[]; seri
         ))}
       </div>
 
+      <div className="-mx-1 overflow-x-auto px-1">
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="h-auto w-full touch-none select-none"
+        className="h-auto w-full min-w-[620px] touch-pan-x select-none sm:min-w-0"
         role="img"
         aria-label="Evolución del capital de cada inversionista durante el experimento, partiendo de 1"
         onPointerMove={onMove}
@@ -113,6 +114,7 @@ export function CurvesChart({ dates, series, defaults }: { dates: string[]; seri
           <circle key={s.id} cx={x(hi)} cy={y(s.values[hi])} r="3.5" fill={s.color} stroke="#0a0c0f" strokeWidth="1.5" />
         ))}
       </svg>
+      </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
         <span className="num text-ink-3">{dateFmt.format(new Date(`${dates[hi]}T00:00:00Z`))}</span>

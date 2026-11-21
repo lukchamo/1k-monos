@@ -23,13 +23,13 @@ export const viewport: Viewport = { themeColor: "#0a0c0f", colorScheme: "dark" }
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col overflow-x-clip">
         <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-brand focus:px-3 focus:py-2 focus:text-brand-ink">
           Saltar al contenido
         </a>
         <DisclaimerBar />
         <Header />
-        <main id="contenido" className="flex-1">
+        <main id="contenido" className="w-full min-w-0 flex-1">
           {children}
         </main>
         <Footer />

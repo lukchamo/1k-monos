@@ -48,7 +48,7 @@ export default async function InvestorPage({ params }: { params: Promise<{ id: s
   });
 
   return (
-    <div className="mx-auto max-w-5xl space-y-12 px-4 pt-10">
+    <div className="mx-auto max-w-5xl space-y-10 px-4 pt-8 sm:space-y-12 sm:pt-10">
       <header className="space-y-4">
         <Link href="/#ranking" className="text-sm text-ink-3 hover:text-ink">← Volver al ranking</Link>
         <div className="flex flex-wrap items-center gap-3">
@@ -56,12 +56,12 @@ export default async function InvestorPage({ params }: { params: Promise<{ id: s
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{inv.name}</h1>
           <span className="rounded-full border border-line px-2.5 py-0.5 text-sm text-ink-2">{inv.family}</span>
         </div>
-        <p className="max-w-3xl text-lg text-ink-2">{ruleText(inv.rule)}</p>
+        <p className="max-w-3xl text-base text-ink-2 sm:text-lg">{ruleText(inv.rule)}</p>
         <p className="max-w-3xl text-sm text-ink-3">{FAMILY_BLURB[inv.family]}</p>
       </header>
 
       {row ? (
-        <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
           {[
             ["Puesto", `${rank} de ${lab.ranking.rows.length}`, ""],
             ["Resultado", pct(row.total_return), tone(row.total_return)],
@@ -111,7 +111,7 @@ export default async function InvestorPage({ params }: { params: Promise<{ id: s
               .map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4 border-b border-line/60 py-1.5">
                   <dt className="text-ink-3">{k}</dt>
-                  <dd className="num text-right">{typeof v === "object" ? JSON.stringify(v) : String(v)}</dd>
+                  <dd className="num break-all text-right">{typeof v === "object" ? JSON.stringify(v) : String(v)}</dd>
                 </div>
               ))}
           </dl>

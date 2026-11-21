@@ -16,10 +16,10 @@ const CURVE_STEP = 3; // una de cada tres sesiones: menos peso en la página, mi
 
 function Stat({ label, value, hint, tone = "" }: { label: string; value: string; hint: string; tone?: string }) {
   return (
-    <div className="card p-4">
+    <div className="card p-3 sm:p-4">
       <p className="eyebrow">{label}</p>
-      <p className={`num mt-2 text-3xl font-semibold tracking-tight ${tone}`}>{value}</p>
-      <p className="mt-1.5 text-sm text-ink-2">{hint}</p>
+      <p className={`num mt-1.5 text-2xl font-semibold tracking-tight sm:mt-2 sm:text-3xl ${tone}`}>{value}</p>
+      <p className="mt-1 text-[0.8rem] leading-snug text-ink-2 sm:mt-1.5 sm:text-sm">{hint}</p>
     </div>
   );
 }
@@ -46,18 +46,18 @@ export default async function Home() {
   const defaults = [best?.investor_id, worst?.investor_id, hold?.investor_id].filter(Boolean) as string[];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-20 px-4 pt-10">
+    <div className="mx-auto max-w-6xl space-y-14 px-4 pt-8 sm:space-y-20 sm:pt-10">
       <section className="space-y-8">
         <div className="max-w-3xl space-y-5">
           <p className="eyebrow">Experimento abierto · en curso</p>
-          <h1 className="text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-6xl">
+          <h1 className="text-balance text-[2.1rem] font-semibold leading-[1.1] tracking-tight sm:text-6xl sm:leading-[1.08]">
             ¿Le gana una buena idea a <span className="text-brand">{mk ? int(mk.n) : "miles de"} monos</span> lanzando dardos?
           </h1>
-          <p className="text-pretty text-lg text-ink-2">
+          <p className="text-pretty text-base text-ink-2 sm:text-lg">
             {investors.length} inversionistas virtuales, cada uno con una regla fija y pública, operan sobre {Object.values(universe.segments).flat().length}{" "}
             mercados reales. Los medimos contra monos que compran y venden al azar. Todo el código, los datos y las decisiones están a la vista.
           </p>
-          <div className="flex flex-wrap gap-3 text-sm">
+          <div className="flex flex-wrap gap-2.5 text-sm sm:gap-3">
             <a href="#ranking" className="rounded-lg bg-brand px-4 py-2.5 font-medium text-brand-ink hover:brightness-110">Ver el ranking</a>
             <Link href="/metodo" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Cómo funciona</Link>
             <a href={SITE.repo} target="_blank" rel="noreferrer" className="rounded-lg border border-line px-4 py-2.5 hover:border-ink-2">Ver el código</a>
@@ -76,7 +76,7 @@ export default async function Home() {
           }}
         />
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <Stat label="El mejor" value={pct(best?.total_return)} hint={`${best?.name ?? "—"} en el periodo`} tone={best && best.total_return >= 0 ? "text-up" : "text-down"} />
           <Stat label="Listón de la suerte" value={pct(mk?.best_of_n_p95)} hint={`Lo que gana el mejor de ${nTrials} monos`} tone="text-brand" />
           <Stat label="Superan la suerte" value={`${beatsLuck} de ${theses.length}`} hint={beatsLuck ? "Por ahora. Falta confirmarlo en vivo." : "Nadie ha demostrado ventaja todavía"} />

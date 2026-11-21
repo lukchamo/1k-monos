@@ -22,6 +22,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 | D-16 | **Laboratorio educativo con reglas iguales para todos.** | En España, recomendar personalizado es asesoramiento y exige autorización de la CNMV. | Nada de perfilar usuarios ni decir qué hacer con su dinero. Consulta legal antes de cobrar. |
 | D-17 | **Producto de CooWeb / LuchoIA.** | Decisión de negocio. | Entidad que lo lanza: pendiente (ver preguntas abiertas del PRD). |
 
+| D-18 | **Resumen diario solo para el autor.** Tras cada cierre, el laboratorio envía por correo a una única dirección (secreto `DIGEST_TO`) los activos donde al menos la mitad neta de los inversionistas coincide, y verifica las llamadas anteriores con el cierre siguiente. | El autor quiere seguir el experimento sin abrir la web, y comprobar si el consenso acierta. | No es un servicio de señales: un destinatario, nunca usuarios (D-16). El historial de aciertos sí es público en `/v1/calls`, como un resultado más del experimento. Abrirlo a terceros exigiría consulta legal previa. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.

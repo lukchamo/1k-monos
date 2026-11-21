@@ -33,7 +33,13 @@
     { "name": "RL_WRITE", "namespace_id": "1003", "simple": { "limit": 10, "period": 60 } }
   ],
 
+  // correo privado al autor tras cada cierre (Cloudflare Email Service)
+  "send_email": [{ "name": "EMAIL" }],
+
   "vars": {
+    // remitente provisional: un dominio ya dado de alta en la cuenta. Cambiar al dominio propio cuando exista
+    "DIGEST_FROM": "laboratorio@unifyflow.app",
+    "SITE_URL": "https://1k-monos-web.lc-45e.workers.dev",
     "TAXONOMY_VERSION": "tax-1.0",
     "PROMPT_VERSION": "extract-1.0",
     "AI_GATEWAY_ID": "lab-inversionistas",

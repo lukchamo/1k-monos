@@ -7,6 +7,7 @@ const NAV = [
   { href: "/noticias", label: "Noticias" },
   { href: "/metodo", label: "Método" },
   { href: "/experimentos", label: "Experimentos" },
+  { href: "/mcp", label: "MCP" },
 ];
 
 export function Logo() {
@@ -31,23 +32,27 @@ export function Logo() {
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 px-4 py-2.5 md:py-3">
         <Logo />
-        <nav aria-label="Principal" className="ml-auto flex items-center gap-1 overflow-x-auto text-sm text-ink-2">
+        <a
+          href={SITE.repo}
+          target="_blank"
+          rel="noreferrer"
+          className="order-2 ml-auto whitespace-nowrap rounded-md border border-line px-2.5 py-1.5 text-sm text-ink hover:border-brand hover:text-brand md:order-3 md:ml-1"
+        >
+          Código abierto
+        </a>
+        {/* en móvil la navegación baja a su propia fila y se desliza con el dedo */}
+        <nav
+          aria-label="Principal"
+          className="order-3 -mx-4 mt-2 flex w-[calc(100%+2rem)] items-center gap-1 overflow-x-auto px-3 text-sm text-ink-2 [scrollbar-width:none] md:order-2 md:mx-0 md:ml-auto md:mt-0 md:w-auto md:px-0 [&::-webkit-scrollbar]:hidden"
+        >
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="whitespace-nowrap rounded-md px-2.5 py-1.5 hover:bg-surface-2 hover:text-ink">
+            <Link key={n.href} href={n.href} className="whitespace-nowrap rounded-md px-2.5 py-2 hover:bg-surface-2 hover:text-ink md:py-1.5">
               {n.label}
             </Link>
           ))}
-          <a
-            href={SITE.repo}
-            target="_blank"
-            rel="noreferrer"
-            className="ml-1 whitespace-nowrap rounded-md border border-line px-2.5 py-1.5 text-ink hover:border-brand hover:text-brand"
-          >
-            Código abierto
-          </a>
         </nav>
       </div>
     </header>
@@ -56,7 +61,7 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-line">
+    <footer className="mt-16 border-t border-line md:mt-24">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 text-sm text-ink-2 md:grid-cols-3">
         <div className="space-y-3">
           <Logo />
@@ -67,6 +72,7 @@ export function Footer() {
           <ul className="space-y-1.5">
             <li><Link className="hover:text-ink" href="/metodo">Cómo funciona</Link></li>
             <li><Link className="hover:text-ink" href="/experimentos">Micro-interfaces experimentales</Link></li>
+            <li><Link className="hover:text-ink" href="/mcp">Conectar tu asistente (MCP)</Link></li>
             <li><a className="hover:text-ink" href={SITE.repo} target="_blank" rel="noreferrer">Repositorio en GitHub</a></li>
             <li><a className="hover:text-ink" href={`${SITE.repo}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer">Cómo contribuir</a></li>
           </ul>

@@ -82,12 +82,19 @@
   "TAXONOMY_VERSION": "tax-1.0",
   "PROMPT_VERSION": "extract-1.0",
   "AI_GATEWAY_ID": "lab-inversionistas",
-  "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+  "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "DIGEST_FROM": "laboratorio@unifyflow.app",
+  "SITE_URL": "http://localhost:8788"
  },
  "triggers": {
   "crons": [
    "*/15 * * * *",
    "30 22 * * 1-5"
   ]
- }
+ },
+ "send_email": [
+  {
+   "name": "EMAIL"
+  }
+ ]
 }

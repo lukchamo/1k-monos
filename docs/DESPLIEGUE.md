@@ -91,6 +91,19 @@ y cambia `NEXT_PUBLIC_SITE_URL` en `web/wrangler.jsonc`.
 
 Ya viene activada en los dos `wrangler.jsonc` (logs, logs de invocación y trazas). Se consulta en Workers → Observability. Consultas útiles: `level = "error"` y `$workers.outcome != "ok"`.
 
+## 6 bis. Correo diario al autor
+
+Tras cada cierre con decisiones, el Worker envía un resumen a la dirección del secreto `DIGEST_TO` usando Cloudflare Email Service (binding `EMAIL`). El remitente es la variable `DIGEST_FROM` y debe pertenecer a un dominio dado de alta en Email Service; hoy es provisional (`laboratorio@unifyflow.app`) hasta tener dominio propio.
+
+```bash
+npx wrangler secret put DIGEST_TO          # tu correo; no se guarda en el repositorio
+# enviar o previsualizar a mano el de una fecha
+curl -X POST https://<tu-api>/v1/digest -H "authorization: Bearer $MCP_TOKEN" \
+     -H 'content-type: application/json' -d '{"date":"2026-11-20","send":false}'
+```
+
+Sin precios nuevos (falta `TWELVE_DATA_API_KEY`) no hay cierres nuevos y por tanto no hay correos automáticos.
+
 ## 7. Cloudflare Artifacts (experimental)
 
 Las micro-interfaces de `/experimentos` viven en un repositorio Git de Artifacts (plan Workers Paid, beta abierta): namespace `lab-1k-monos`, repositorio `microui`, rama `main`. La web lo lee con el binding `ARTIFACTS` de `web/wrangler.jsonc`; si falla, usa las vistas de `web/microui/`.

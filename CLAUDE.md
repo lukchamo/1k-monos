@@ -29,6 +29,7 @@ worker/      Cloudflare Worker en TypeScript
   src/workflows/ BacktestWorkflow: backtest bajo demanda
   src/mcp.ts     MCP propio (JSON-RPC sobre HTTP): ranking, explicar_decision, correr_backtest, presion_noticias, comparar_versiones
   migrations/    esquema D1
+  src/digest*.ts resumen privado al autor: llamadas de consenso, verificación y correo (digest-core.ts es puro)
   src/guard.ts   guardarraíles de la API: validación, límite de ritmo, token, saneado de texto de terceros
   test/          paridad, point-in-time, noticias, validación, guardarraíles
 web/         Next.js 16 (App Router) en Cloudflare Workers con OpenNext
@@ -48,7 +49,7 @@ python research/golden.py          # regenera shared/golden/*.json
 
 # worker
 cd worker && npm install
-npm run check                      # typecheck + 208 tests (paridad incluida)
+npm run check                      # typecheck + 213 tests (paridad incluida)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local                  # sin Workers AI (no requiere login); token MCP local: dev-token
 npx wrangler deploy --dry-run      # valida bindings y empaquetado
@@ -66,6 +67,7 @@ TOKEN=<token> scripts/pentest.sh                       # contra la API (8787) y 
 ## Web: reglas
 
 - **Caché: ISR por tiempo** (`export const revalidate`). No actives `cacheComponents` ni `use cache`: en Workers cuelga renders (opennextjs-cloudflare #1318).
+- **Responsive:** tras tocar la interfaz, comprueba que no hay desbordamiento horizontal a 360, 390, 768 y 1024 px. Un elemento `sr-only` dentro de un contenedor con scroll necesita que ese contenedor sea `relative`.
 - Server Components por defecto. Solo son de cliente `CurvesChart` y `LivePulse`.
 - Todo dato llega por `getLab()` (una llamada a `/v1/lab`). No añadas llamadas por componente.
 - **El aviso «no es una recomendación» va en todas las páginas.** Ningún texto aconseja qué hacer con el dinero.

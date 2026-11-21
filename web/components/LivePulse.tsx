@@ -62,7 +62,7 @@ export function LivePulse({ initial }: { initial: Pulse }) {
   }, []);
 
   return (
-    <div className="card flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 text-sm" aria-live="polite">
+    <div className="card flex flex-col gap-x-6 gap-y-1.5 px-4 py-3 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-y-2" aria-live="polite">
       <span className="flex items-center gap-2 font-medium">
         <span className={`inline-block size-2.5 rounded-full ${pulse.live ? "pulse-dot bg-up" : "bg-ink-3"}`} aria-hidden="true" />
         {pulse.live ? "Escuchando el mercado" : "Foto del experimento"}
@@ -76,7 +76,7 @@ export function LivePulse({ initial }: { initial: Pulse }) {
       <span className="text-ink-2">
         Noticias leídas <span className="num text-ink">{pulse.news_total}</span>
       </span>
-      {pulse.headline ? <span className="basis-full truncate text-ink-3 md:basis-auto md:flex-1 md:text-right">«{pulse.headline}»</span> : null}
+      {pulse.headline ? <span className="line-clamp-2 text-ink-3 sm:basis-full sm:truncate md:basis-auto md:flex-1 md:text-right">«{pulse.headline}»</span> : null}
     </div>
   );
 }
