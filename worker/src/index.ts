@@ -70,6 +70,24 @@ function investorOf(raw: string | null): string {
   return s;
 }
 
+/**
+ * Memoria por isolate para las lecturas públicas: cien visitas a la vez comparten una sola consulta
+ * a D1. Solo guarda datos públicos e iguales para todos. Vive fuera del motor: no afecta al determinismo.
+ */
+const MEMO = new Map<string, { at: number; value: Promise<unknown> }>();
+function memo<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const hit = MEMO.get(key);
+  if (hit && now - hit.at < ttlMs) return hit.value as Promise<T>;
+  if (MEMO.size > 200) MEMO.clear(); // las claves salen de listas blancas, pero por si acaso
+  const value = load();
+  MEMO.set(key, { at: now, value });
+  value.catch(() => MEMO.get(key)?.value === value && MEMO.delete(key)); // un fallo no se queda guardado
+  return value;
+}
+const SHORT = 30_000;
+const LONG = 120_000;
+
 const lineup = (env: Env) =>
   Promise.all(LINEUP.map(async (s) => ({ id: s.id, name: s.name, family: s.family, version: s.version, rule: s.rule, config_hash: await configHash(s, env.TAXONOMY_VERSION) })));
 
@@ -97,18 +115,13 @@ async function route(req: Request, env: Env): Promise<Response> {
     const heavy = p === "/v1/lab" || p === "/v1/curves" || p === "/v1/pressure" || p === "/v1/decisions";
     if (!(await allow(env, req, heavy ? "heavy" : "read"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
 
-    if (p === "/v1/status") return json({ ...(await labStatus(env.DB)), engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString(), aviso: DISCLAIMER }, 200, "short");
+    if (p === "/v1/status") return json({ ...(await memo("status", SHORT, () => labStatus(env.DB))), engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString(), aviso: DISCLAIMER }, 200, "short");
 
     // todo lo que pinta la web en una sola llamada: un viaje a D1 por render en vez de siete
     if (p === "/v1/lab") {
-      const [status, rank, curve, news, positions, investors] = await Promise.all([
-        labStatus(env.DB),
-        ranking(env.DB),
-        curves(env.DB),
-        latestNews(env.DB, 30),
-        paperPositions(env.DB),
-        lineup(env),
-      ]);
+      const [status, rank, curve, news, positions, investors] = await memo("lab", SHORT, () =>
+        Promise.all([labStatus(env.DB), ranking(env.DB), curves(env.DB), latestNews(env.DB, 30), paperPositions(env.DB), lineup(env)]),
+      );
       return json(
         { status: { ...status, engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString() }, ranking: rank, curves: curve, news, positions, investors, universe: { segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, aviso: DISCLAIMER },
         200,
@@ -116,19 +129,31 @@ async function route(req: Request, env: Env): Promise<Response> {
       );
     }
 
-    if (p === "/v1/investors") return json(await lineup(env), 200, "long");
+    if (p === "/v1/investors") return json(await memo("investors", LONG, () => lineup(env)), 200, "long");
 
     if (p === "/v1/universe") return json({ segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, 200, "long");
 
-    if (p === "/v1/ranking")
-      return json({ ...(await ranking(env.DB, q.get("run") ? v.runId(q.get("run")) : undefined, segmentOf(q.get("segment")))), aviso: DISCLAIMER }, 200, "long");
+    if (p === "/v1/ranking") {
+      const run = q.get("run") ? v.runId(q.get("run")) : undefined;
+      const seg = segmentOf(q.get("segment"));
+      return json({ ...(await memo(`ranking:${run ?? ""}:${seg}`, LONG, () => ranking(env.DB, run, seg))), aviso: DISCLAIMER }, 200, "long");
+    }
 
-    if (p === "/v1/curves") return json(await curves(env.DB, q.get("run") ? v.runId(q.get("run")) : undefined), 200, "long");
+    if (p === "/v1/curves") {
+      const run = q.get("run") ? v.runId(q.get("run")) : undefined;
+      return json(await memo(`curves:${run ?? ""}`, LONG, () => curves(env.DB, run)), 200, "long");
+    }
 
-    if (p === "/v1/news")
-      return json({ events: await latestNews(env.DB, v.int(q.get("limit"), "limit", 1, 100, 30), q.get("symbol") ? symbolOf(q.get("symbol")) : undefined), aviso: DISCLAIMER }, 200, "short");
+    if (p === "/v1/news") {
+      const limit = v.int(q.get("limit"), "limit", 1, 100, 30);
+      const symbol = q.get("symbol") ? symbolOf(q.get("symbol")) : undefined;
+      return json({ events: await memo(`news:${limit}:${symbol ?? ""}`, SHORT, () => latestNews(env.DB, limit, symbol)), aviso: DISCLAIMER }, 200, "short");
+    }
 
-    if (p === "/v1/positions") return json(await paperPositions(env.DB, q.get("date") ? v.date(q.get("date")) : undefined), 200, "short");
+    if (p === "/v1/positions") {
+      const date = q.get("date") ? v.date(q.get("date")) : undefined;
+      return json(await memo(`positions:${date ?? ""}`, SHORT, () => paperPositions(env.DB, date)), 200, "short");
+    }
 
     if (p === "/v1/pressure") {
       const symbol = symbolOf(q.get("symbol"));
@@ -186,6 +211,8 @@ export default {
       if (err instanceof BadInput) return fail(400, err.message);
       // el detalle va al log (observabilidad), nunca al cliente
       console.error(JSON.stringify({ level: "error", path: new URL(req.url).pathname, message: String(err) }));
+      // base de datos saturada: es temporal, se dice así y se pide reintentar
+      if (/overloaded|too many requests|queued|D1_ERROR.*(busy|reset|timeout)/i.test(String(err))) return fail(503, "servicio saturado, reintenta en unos segundos", { "retry-after": "5" });
       return fail(500, "error interno");
     }
   },
