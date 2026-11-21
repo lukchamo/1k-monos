@@ -30,6 +30,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 
 | D-21 | **Playground manual** (`/playground`): cuenta de práctica donde el usuario añade saldo, elige activo y abre largos o cortos con hasta 5×, sobre los precios reales de cada día, avanzando el tiempo a su ritmo. El correo al autor enlaza cada llamada con el playground ya preparado. | El autor quiere practicar «como en Neverless» antes de pensar en dinero real. | Vive en la web (`web/lib/paper.ts`), fuera del motor. Nunca muestra precios futuros. La cuenta se guarda solo en el navegador. Las reglas de margen de Neverless que no son públicas (diferencial, intereses, margen de mantenimiento) son supuestos declarados en pantalla. |
 
+| D-22 | **Tutoriales y vídeos** (`/tutoriales`): un tutorial interactivo dentro de la web y cinco vídeos (dos reels en vertical y en ancho, y un recorrido) alojados en Cloudinary. Los vídeos se generan desde `media/video.html` con una línea de tiempo en JavaScript y se graban fotograma a fotograma. | Explicar el laboratorio al público y tener material para promocionarlo. | Los vídeos solo usan datos del experimento real y dicen en pantalla que no es una recomendación. El caso del corto en Ethereum incluye que un día no demuestra nada. Si cambian los datos, se cambian los guiones y se vuelve a grabar. Promocionar el proyecto en redes sigue sujeto a D-16 y D-19: consulta legal antes de darle difusión amplia. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.

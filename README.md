@@ -24,6 +24,7 @@ worker/    La API del laboratorio: motor determinístico, D1, Durable Objects, W
 research/  La referencia en Python que produjo los números. El motor TS debe coincidir con ella.
 shared/    Taxonomía de noticias, esquema JSON, resultados dorados y esquema SQL.
 docs/      PRD, SPEC, algoritmos, decisiones, seguridad, despliegue y dominios.
+media/     Vídeos de promoción y tutorial hechos con HTML y JavaScript, y su grabador.
 scripts/   pentest.sh: pruebas de seguridad de humo contra tu despliegue.
 ```
 
@@ -43,7 +44,7 @@ Necesitas Node 22 o superior. Python 3.11+ solo si quieres regenerar la referenc
 ```bash
 # 1) la API
 cd worker && npm install
-npm run check                 # typecheck + 218 tests (paridad con Python, sin mirar el futuro, guardarraíles)
+npm run check                 # typecheck + 222 tests (paridad con Python, sin mirar el futuro, guardarraíles)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local             # http://localhost:8787
 

@@ -11,7 +11,9 @@ const csp = [
   // static.cloudflareinsights.com: analítica de visitas de Cloudflare (sin cookies), que la zona inyecta sola
   "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  // res.cloudinary.com: vídeos y portadas de la pestaña de tutoriales
+  "img-src 'self' data: https://res.cloudinary.com",
+  "media-src 'self' https://res.cloudinary.com",
   "font-src 'self'",
   "connect-src 'self' https://cloudflareinsights.com",
   "worker-src 'self'",

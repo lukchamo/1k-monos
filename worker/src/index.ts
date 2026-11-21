@@ -15,6 +15,7 @@ import { coinGecko, ingestPrices, twelveData } from "./ingest/prices";
 import { mcp } from "./mcp";
 import { sendDigest, trackRecord } from "./digest";
 import { notifyAll, subscribe, unsubscribe } from "./push";
+import { renderPromo } from "./promo";
 
 const KNOWN_SYMBOLS = new Set<string>([...UNIVERSE, INDICATORS.vix, INDICATORS.tnx]);
 const KNOWN_INVESTORS = new Set(LINEUP.map((s) => s.id));
@@ -234,7 +235,7 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
   if (p === "/v1/push/subscribe") return json(await subscribe(env.DB, await readJson(req, 4096)));
   if (p === "/v1/push/unsubscribe") return json(await unsubscribe(env.DB, await readJson(req, 4096)));
 
-  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test") return fail(404, "no encontrado");
+  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test" && p !== "/v1/promo") return fail(404, "no encontrado");
   if (!(await tokenOk(req, env.MCP_TOKEN))) return fail(401, "no autorizado", { "www-authenticate": "Bearer" });
   const b = (await readJson(req)) as Record<string, unknown>;
   if (!b || typeof b !== "object" || Array.isArray(b)) throw new BadInput("el cuerpo debe ser un objeto JSON");
@@ -243,6 +244,14 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
     const params = backtestParams(b);
     const inst = await env.BACKTEST.create({ params });
     return json({ run_id: inst.id }, 202);
+  }
+
+  // correo de promoción de los tutoriales, solo al autor
+  if (p === "/v1/promo") {
+    if (!env.EMAIL || !env.DIGEST_TO || !env.DIGEST_FROM) return fail(503, "correo sin configurar");
+    const m = renderPromo(env.SITE_URL ?? "https://1kmonos.com");
+    await env.EMAIL.send({ to: env.DIGEST_TO, from: { email: env.DIGEST_FROM, name: "1K Monos" }, subject: m.subject, text: m.text, html: m.html });
+    return json({ sent: true, subject: m.subject });
   }
 
   if (p === "/v1/push/test")

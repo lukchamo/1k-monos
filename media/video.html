@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>1K Monos · vídeo</title>
+<!--
+  Vídeos de 1K Monos hechos con HTML, CSS y JavaScript.
+  Cada vídeo es una lista de escenas. Una línea de tiempo determinística (setT) coloca cada elemento
+  según el segundo exacto, así que el mismo archivo sirve para verlo en el navegador (?v=reel1&play=1)
+  y para grabarlo fotograma a fotograma con media/render.mjs.
+  Vídeos: ?v=reel1 (los monos) · ?v=reel2 (caso real en el playground) · ?v=tour (recorrido).
+-->
+<style>
+  :root { --bg:#0a0c0f; --card:#11151a; --line:#232a33; --ink:#eef1f5; --ink2:#a7b0bd; --ink3:#717c8b; --brand:#ffd84d; --up:#4fd68a; --down:#ff6b6b; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { height:100%; background:var(--bg); color:var(--ink); font-family:Inter, system-ui, sans-serif; overflow:hidden; }
+  .scene { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; gap:3.2vmin; padding:13vmin 8vmin 15vmin; opacity:0; }
+  /* en vertical el texto va más grande: se lee en un móvil */
+  @media (orientation:portrait) { .scene { zoom:1.3; padding:11vmin 6vmin 13vmin; } }
+  @media (orientation:landscape) { .scene { padding:11vmin 16vw 13vmin; } .scene.wide { padding:14vmin 6vw 12vmin; } }
+  .eyebrow { font:600 2.4vmin/1.2 ui-monospace, "DejaVu Sans Mono", monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); }
+  h1 { font-size:8.6vmin; line-height:1.06; letter-spacing:-.03em; font-weight:700; text-wrap:balance; }
+  h2 { font-size:6.4vmin; line-height:1.1; letter-spacing:-.025em; font-weight:700; text-wrap:balance; }
+  p { font-size:3.7vmin; line-height:1.4; color:var(--ink2); text-wrap:pretty; }
+  .y { color:var(--brand); } .g { color:var(--up); } .r { color:var(--down); }
+  .num { font-family:ui-monospace, "DejaVu Sans Mono", monospace; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+  .big { font-size:17vmin; line-height:1; font-weight:700; }
+  .card { background:var(--card); border:.2vmin solid var(--line); border-radius:2.6vmin; padding:3.4vmin; }
+  .chips { display:flex; flex-wrap:wrap; gap:1.6vmin; }
+  .chip { display:flex; align-items:center; gap:1.2vmin; border:.2vmin solid var(--line); border-radius:99vmin; padding:1.4vmin 2.6vmin; font-size:3.2vmin; background:var(--card); }
+  .dot { width:1.8vmin; height:1.8vmin; border-radius:50%; }
+  .row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:2vmin; font-size:3.6vmin; }
+  .track { height:2.4vmin; border-radius:99vmin; background:var(--line); overflow:hidden; grid-column:1 / -1; }
+  .fill { height:100%; border-radius:99vmin; width:0; }
+  .monkeys { display:grid; grid-template-columns:repeat(16, 1fr); gap:1vmin; }
+  @media (orientation:landscape) { .monkeys { grid-template-columns:repeat(32, 1fr); } }
+  .monkeys svg { width:100%; height:auto; display:block; }
+  .split { display:flex; height:3.4vmin; border-radius:99vmin; overflow:hidden; background:var(--line); }
+  .split span { display:block; height:100%; width:0; }
+  .ticket { display:flex; flex-direction:column; gap:2.2vmin; }
+  .field { border:.2vmin solid var(--line); border-radius:1.8vmin; padding:2vmin 2.6vmin; font-size:3.4vmin; display:flex; justify-content:space-between; background:var(--bg); }
+  .sides { display:grid; grid-template-columns:1fr 1fr; gap:1.6vmin; }
+  .side { border:.2vmin solid var(--line); border-radius:1.8vmin; padding:2.2vmin; text-align:center; font-size:3.4vmin; font-weight:600; color:var(--ink2); }
+  .side.on { border-color:var(--down); background:rgba(255,107,107,.15); color:var(--down); }
+  .btn { border-radius:1.8vmin; padding:2.8vmin; text-align:center; font-size:3.8vmin; font-weight:700; background:var(--down); color:#2a0606; }
+  .cta { display:inline-block; align-self:flex-start; background:var(--brand); color:#1a1500; font-weight:700; font-size:4.6vmin; padding:2.6vmin 4.4vmin; border-radius:2vmin; }
+  .shot { position:relative; flex:1; min-height:0; border-radius:2vmin; overflow:hidden; border:.2vmin solid var(--line); background:var(--card); }
+  .shot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:50% 20%; }
+  .cap { display:flex; align-items:center; gap:2.4vmin; }
+  .cap b { flex:none; display:grid; place-items:center; width:6vmin; height:6vmin; border-radius:50%; background:var(--brand); color:#1a1500; font-size:3.2vmin; }
+  .cap span { font-size:3.8vmin; font-weight:600; line-height:1.25; }
+  #chrome { position:absolute; inset:0; pointer-events:none; }
+  #bar { position:absolute; top:3.2vmin; left:5vmin; right:5vmin; height:.7vmin; border-radius:99vmin; background:var(--line); overflow:hidden; }
+  #bar i { display:block; height:100%; width:0; background:var(--brand); }
+  #brand { position:absolute; top:6vmin; left:5vmin; display:flex; align-items:center; gap:1.6vmin; font-weight:700; font-size:3.2vmin; }
+  #brand svg { width:5.4vmin; height:5.4vmin; }
+  #legal { position:absolute; bottom:4.2vmin; left:5vmin; right:5vmin; font-size:2.2vmin; color:var(--ink3); text-align:center; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="mono" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#ffd84d"/><circle cx="7" cy="14" r="4" fill="#1a1500"/><circle cx="25" cy="14" r="4" fill="#1a1500"/><circle cx="16" cy="16" r="9.5" fill="#1a1500"/><ellipse cx="16" cy="18.5" rx="6.2" ry="5.4" fill="#ffd84d"/><circle cx="13" cy="13.2" r="1.5" fill="#ffd84d"/><circle cx="19" cy="13.2" r="1.5" fill="#ffd84d"/><path d="M12.8 19.6c1.9 1.7 4.5 1.7 6.4 0" stroke="#1a1500" stroke-width="1.4" fill="none" stroke-linecap="round"/></symbol></svg>
+<div id="stage"></div>
+<div id="chrome">
+  <div id="bar"><i></i></div>
+  <div id="brand"><svg><use href="#mono"/></svg><span>1K <span class="y">Monos</span></span></div>
+  <div id="legal">Experimento abierto con dinero ficticio. No es una recomendación de inversión.</div>
+</div>
+<script>
+// ───────────────────────── guiones ─────────────────────────
+// Cada escena: dur (segundos) y html. Dentro del html, data-at="segundos" dice cuándo entra cada pieza.
+// Todos los datos son del experimento real (20-nov-2025 → 20-nov-2026) y de las llamadas verificadas.
+const FAM = [["Tendencia","#5fb2ff"],["Elástico","#ffd84d"],["Cazador","#ff9a52"],["Macro","#b89cff"],["Abogado del diablo","#ff7096"],["Intuición","#4fe0b5"],["Racha","#9aa7b8"]];
+const monkeys = (n) => `<div class="monkeys">${Array.from({length:n},(_, i) => `<svg viewBox="0 0 32 32" data-at="${(0.25 + i * 0.011).toFixed(3)}" data-fx="pop"><use href="#mono"/></svg>`).join("")}</div>`;
+
+const VIDEOS = {
+  reel1: [
+    { dur: 3.6, html: `<p class="eyebrow" data-at="0.1">Experimento abierto</p><h1 data-at="0.3">¿Tu idea de inversión es buena… <span class="y">o tuviste suerte?</span></h1>` },
+    { dur: 4.6, html: `<h2 data-at="0.1">Soltamos <span class="y num">2.000</span> monos a invertir al azar</h2>${monkeys(160)}<p data-at="2.4">Compran y venden tirando una moneda. Con comisiones, como todo el mundo.</p>` },
+    { dur: 4.4, html: `<h2 data-at="0.1">Y <span class="y num">28</span> inversionistas con reglas fijas y públicas</h2><div class="chips">${FAM.map(([n, c], i) => `<span class="chip" data-at="${0.7 + i * 0.22}" data-fx="pop"><i class="dot" style="background:${c}"></i>${n}</span>`).join("")}</div><p data-at="2.7">Cada uno decide con los datos de ese día. Nunca ve el futuro.</p>` },
+    { dur: 5, html: `<p class="eyebrow" data-at="0.1">Un año después</p>
+      <div class="card" data-at="0.4"><div class="row"><span>El mejor inversionista</span><b class="num g" data-count="6.2" data-fmt="pct" data-at="0.8">0</b><div class="track"><div class="fill" style="background:var(--up)" data-bar="0.23" data-at="0.8"></div></div></div></div>
+      <div class="card" data-at="1.5"><div class="row"><span>Comprar todo y esperar</span><b class="num r" data-count="-8.8" data-fmt="pct" data-at="1.9">0</b><div class="track"><div class="fill" style="background:var(--down)" data-bar="0.32" data-at="1.9"></div></div></div></div>
+      <p data-at="3">Suena bien, ¿no? Espera.</p>` },
+    { dur: 5.4, html: `<p class="eyebrow" data-at="0.1">El listón de la suerte</p><h2 data-at="0.3">El mejor de 28 monos ganó</h2><div class="big num y" data-count="27.3" data-fmt="pct" data-at="0.9">0</div><p data-at="2.2">Sin saber nada. Pura suerte.</p><h2 data-at="3.2"><span class="num y">0 de 28</span> inversionistas lo superan</h2>` },
+    { dur: 4.4, html: `<h1 data-at="0.1">Antes de creerte un resultado, <span class="y">compáralo con los monos</span></h1><p data-at="1.5">Código, datos y decisiones a la vista.</p><span class="cta" data-at="2.1" data-fx="pop">1kmonos.com</span>` },
+  ],
+  reel2: [
+    { dur: 3.4, html: `<p class="eyebrow" data-at="0.1">Caso real · dinero ficticio</p><h1 data-at="0.3">Probé un corto en <span class="y">Ethereum</span> con 50 € de mentira</h1>` },
+    { dur: 5.2, html: `<p class="eyebrow" data-at="0.1">19 de noviembre de 2026 · Ethereum</p><h2 data-at="0.3">¿Qué hacían los 28 inversionistas del laboratorio?</h2>
+      <div class="card" data-at="1"><div class="split"><span style="background:var(--up)" data-bar="0.357" data-at="1.3"></span><span style="margin-left:auto;background:var(--down)" data-bar="0.607" data-at="1.3"></span></div>
+      <div class="row" style="margin-top:2vmin"><span class="g"><b class="num" data-count="10" data-fmt="int" data-at="1.3">0</b> en largo</span><span class="r"><b class="num" data-count="17" data-fmt="int" data-at="1.3">0</b> en corto</span></div></div>
+      <p data-at="3">La mayoría apostaba a que bajaba.</p>` },
+    { dur: 5.4, html: `<p class="eyebrow" data-at="0.1">En el playground</p><div class="card ticket" data-at="0.3">
+      <div class="field" data-at="0.6"><span style="color:var(--ink2)">Qué quieres operar</span><b>Ethereum</b></div>
+      <div class="sides" data-at="1.2"><div class="side">Largo · sube</div><div class="side on">Corto · baja</div></div>
+      <div class="field" data-at="1.9"><span style="color:var(--ink2)">Cuánto pones</span><b class="num">50 €</b></div>
+      <div class="field" data-at="2.5"><span style="color:var(--ink2)">Apalancamiento</span><b class="num">1×</b></div>
+      <div class="btn" data-at="3.2" data-fx="pop">Abrir corto en ETH</div></div>` },
+    { dur: 5, html: `<p class="eyebrow" data-at="0.1">Al cierre siguiente</p><h2 data-at="0.3">Ethereum cayó. El corto ganó</h2><div class="big num g" data-count="7.7" data-fmt="pct" data-at="0.9">0</div><p data-at="2.3"><span class="num">50 €</span> ficticios → <b class="num" style="color:var(--ink)">53,8 €</b> en un día.</p>` },
+    { dur: 5.2, html: `<p class="eyebrow" data-at="0.1">¿Y con apalancamiento 5×?</p><div class="card" data-at="0.4"><div class="row"><span>Si baja igual</span><b class="num g" data-count="38.6" data-fmt="pct" data-at="0.8">0</b></div></div><div class="card" data-at="1.6"><div class="row"><span>Si llega a subir igual</span><b class="num r" data-count="-38.6" data-fmt="pct" data-at="2">0</b></div></div><p data-at="3.1">El apalancamiento multiplica lo bueno y lo malo.</p>` },
+    { dur: 4.6, html: `<h2 data-at="0.1">Un día no demuestra nada</h2><p data-at="1">Van <b class="num" style="color:var(--ink)">5 de 5</b> llamadas acertadas. Hacen falta cientos para saber si es algo más que suerte.</p><p data-at="2.6">Por eso se practica con dinero ficticio.</p>` },
+    { dur: 4.2, html: `<h1 data-at="0.1">Pruébalo tú, <span class="y">sin arriesgar nada</span></h1><p data-at="1.3">Largo o corto. Con o sin apalancamiento. Precios reales.</p><span class="cta" data-at="2" data-fx="pop">1kmonos.com/playground</span>` },
+  ],
+  tour: [
+    { dur: 3.6, html: `<p class="eyebrow" data-at="0.1">Tutorial</p><h1 data-at="0.3">Cómo usar <span class="y">1K Monos</span> en un minuto</h1><p data-at="1.5">Un laboratorio abierto de inversionistas con reglas, medido contra monos que operan al azar.</p>` },
+    ...[
+      ["ranking", "Mira el ranking: quién gana y quién pierde contra los monos"],
+      ["posiciones", "Mira qué tiene cada inversionista ahora: verde largo, rojo corto"],
+      ["playground", "Practica con dinero ficticio: elige activo, largo o corto, y avanza el tiempo"],
+      ["simulador", "O deja que la cuenta siga sola a un inversionista, con las comisiones del bróker"],
+      ["avisos", "Activa los avisos y entérate cuando los inversionistas se ponen de acuerdo"],
+      ["mcp", "Conecta tu asistente de IA y pregúntale por el laboratorio"],
+    ].map(([img, text], i) => ({ dur: 6, wide: true, html: `<div class="shot" data-at="0.1"><img src="shots/${img}.jpg" data-zoom="1.07" alt=""></div><div class="cap" data-at="0.5"><b>${i + 1}</b><span>${text}</span></div>` })),
+    { dur: 4.4, html: `<h1 data-at="0.1">Es abierto y es gratis. <span class="y">Rómpelo.</span></h1><p data-at="1.3">Código, datos y decisiones a la vista de todos.</p><span class="cta" data-at="2" data-fx="pop">1kmonos.com</span>` },
+  ],
+};
+
+// ───────────────────────── motor ─────────────────────────
+const q = new URLSearchParams(location.search);
+const scenes = VIDEOS[q.get("v")] ?? VIDEOS.reel1;
+const stage = document.getElementById("stage");
+const FADE = 0.35;
+let start = 0;
+const timeline = scenes.map((s) => {
+  const el = document.createElement("section");
+  el.className = "scene" + (s.wide ? " wide" : "");
+  el.innerHTML = s.html;
+  stage.appendChild(el);
+  const item = { el, start, dur: s.dur, parts: [...el.querySelectorAll("[data-at]")] };
+  start += s.dur;
+  return item;
+});
+window.DURATION = start;
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const fmt = {
+  pct: (v) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(1).replace(".", ",")} %`,
+  int: (v) => String(Math.round(v)),
+};
+
+/** coloca todo el vídeo en el segundo t. No usa el reloj: el mismo t da siempre la misma imagen. */
+window.setT = (t) => {
+  document.querySelector("#bar i").style.width = `${clamp(t / window.DURATION) * 100}%`;
+  for (const s of timeline) {
+    const local = t - s.start;
+    const on = local >= 0 && local < s.dur;
+    s.el.style.opacity = on ? Math.min(ease(local / FADE), ease((s.dur - local) / FADE)) : 0;
+    s.el.style.visibility = on ? "visible" : "hidden";
+    if (!on) continue;
+    for (const p of s.parts) {
+      const e = ease((local - Number(p.dataset.at)) / 0.55);
+      if (p.dataset.bar !== undefined) p.style.width = `${Number(p.dataset.bar) * e * 100}%`;
+      else if (p.dataset.count !== undefined) { p.textContent = fmt[p.dataset.fmt ?? "int"](Number(p.dataset.count) * ease((local - Number(p.dataset.at)) / 1.1)); p.style.opacity = e; }
+      else {
+        p.style.opacity = e;
+        p.style.transform = p.dataset.fx === "pop" ? `scale(${0.6 + 0.4 * e})` : `translateY(${(1 - e) * 4}vmin)`;
+      }
+    }
+    for (const img of s.el.querySelectorAll("[data-zoom]")) img.style.transform = `scale(${1 + (Number(img.dataset.zoom) - 1) * clamp(local / s.dur)})`;
+  }
+};
+window.setT(0);
+
+// para verlo en el navegador: ?play=1 lo reproduce en bucle; clic para pausar
+if (q.get("play")) {
+  let t0 = performance.now(), paused = false, at = 0;
+  const loop = (now) => { if (!paused) { at = ((now - t0) / 1000) % window.DURATION; window.setT(at); } requestAnimationFrame(loop); };
+  document.addEventListener("click", () => { paused = !paused; if (!paused) t0 = performance.now() - at * 1000; });
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>

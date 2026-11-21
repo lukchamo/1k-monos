@@ -7,6 +7,7 @@ const NAV = [
   { href: "/playground", label: "Playground" },
   { href: "/simulador", label: "Simulador" },
   { href: "/#llamadas", label: "Avisos" },
+  { href: "/tutoriales", label: "Tutoriales" },
   { href: "/noticias", label: "Noticias" },
   { href: "/metodo", label: "Método" },
   { href: "/experimentos", label: "Experimentos" },
@@ -73,6 +74,7 @@ export function Footer() {
         <div className="space-y-2">
           <p className="eyebrow">Proyecto</p>
           <ul className="space-y-1.5">
+            <li><Link className="hover:text-ink" href="/tutoriales">Tutoriales y vídeos</Link></li>
             <li><Link className="hover:text-ink" href="/metodo">Cómo funciona</Link></li>
             <li><Link className="hover:text-ink" href="/playground">Playground: practica con dinero ficticio</Link></li>
             <li><Link className="hover:text-ink" href="/simulador">Simulador en piloto automático</Link></li>

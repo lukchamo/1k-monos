@@ -13,3 +13,4 @@ seed/
 __pycache__/
 cloudflare-env.d.ts
 *.tsbuildinfo
+media/out/
