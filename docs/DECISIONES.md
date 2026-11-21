@@ -26,6 +26,8 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 
 | D-19 | **Avisos del navegador abiertos a cualquiera** (decisión del autor, 21-nov-2026). Quien visita la web puede activar un aviso cuando el laboratorio registra llamadas nuevas. | El autor quiere enterarse en el móvil sin abrir la web. Las llamadas ya son públicas en `/v1/calls`. | El texto del aviso solo describe y siempre dice que no es una recomendación. Aun así, avisar a terceros de posiciones en largo y corto se acerca a publicar señales: **pendiente de consulta legal** (D-16) antes de darle difusión. No se guarda ningún dato personal: solo la dirección técnica que da el navegador. |
 
+| D-20 | **Simulador con dinero ficticio en la web** (`/simulador`). Sigue día a día a un inversionista o a un mono con un capital elegido, costes de bróker y apalancamiento opcional. | Ver el efecto de comisiones, intereses y apalancamiento sobre poco capital enseña más que el ranking. | Vive en la web (`web/lib/sim.ts`), fuera del motor: no afecta a la paridad ni al DSR. De Neverless solo se afirma lo que publica (comisión 0, divisa 0, hasta 5×); su diferencial e intereses son supuestos editables. No ejecuta órdenes reales ni se conecta a ningún bróker. |
+
 ## Diferencias conocidas entre la PoC y producción
 
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.

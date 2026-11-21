@@ -71,6 +71,7 @@ Sin API, la web sirve una foto empaquetada del experimento (`web/data/snapshot.j
 | `GET /v1/positions?date=` | Posiciones de paper trading por inversionista |
 | `GET /v1/pressure?symbol=&at=` | Presión de noticias de un activo |
 | `GET /v1/decisions?investor=&symbol=` | Por qué decidió un inversionista |
+| `GET /v1/playground?investor=` | Cierres y posiciones diarias de un inversionista (lo usa el simulador) |
 | `GET /v1/calls` | Llamadas de consenso y su verificación al cierre siguiente |
 | `POST /mcp` | Servidor MCP (JSON-RPC) con cinco herramientas. Ver [docs/MCP.md](docs/MCP.md) |
 

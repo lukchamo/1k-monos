@@ -4,6 +4,7 @@ import { SITE } from "@/lib/site";
 const NAV = [
   { href: "/#ranking", label: "Ranking" },
   { href: "/#posiciones", label: "Posiciones" },
+  { href: "/simulador", label: "Simulador" },
   { href: "/#llamadas", label: "Avisos" },
   { href: "/noticias", label: "Noticias" },
   { href: "/metodo", label: "Método" },
@@ -72,6 +73,7 @@ export function Footer() {
           <p className="eyebrow">Proyecto</p>
           <ul className="space-y-1.5">
             <li><Link className="hover:text-ink" href="/metodo">Cómo funciona</Link></li>
+            <li><Link className="hover:text-ink" href="/simulador">Simulador con dinero ficticio</Link></li>
             <li><Link className="hover:text-ink" href="/experimentos">Micro-interfaces experimentales</Link></li>
             <li><Link className="hover:text-ink" href="/mcp">Conectar tu asistente (MCP)</Link></li>
             <li><a className="hover:text-ink" href={SITE.repo} target="_blank" rel="noreferrer">Repositorio en GitHub</a></li>

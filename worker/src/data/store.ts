@@ -1,5 +1,6 @@
 /** Lectura y escritura en D1. Todo lo que el dashboard y el MCP consultan vive aquí. */
 import { buildPanel, type Panel } from "../engine/panel";
+import { contextFromPanel, runLab, withDependencies } from "../engine/registry";
 import { equity, type Metrics } from "../engine/backtest";
 import type { Ctx } from "../engine/investors";
 import type { LabResult } from "../engine/registry";
@@ -207,4 +208,33 @@ export async function decisionReason(db: D1Database, investor: string, symbol: s
     /* razón corrupta: se devuelve sin ella */
   }
   return { date: row.date, position: row.position, reason };
+}
+
+/**
+ * Datos para el simulador de la web: los cierres y la posición diaria de un inversionista en la
+ * ventana de la última corrida. Las posiciones salen del mismo motor que el ranking, así que el
+ * simulador reproduce exactamente lo que el inversionista habría decidido cada día.
+ */
+export async function playgroundData(db: D1Database, investorId: string) {
+  const run = await db.prepare("SELECT start_date, end_date FROM runs WHERE status = 'complete' ORDER BY created_at DESC LIMIT 1").first<{ start_date: string; end_date: string }>();
+  if (!run) return null;
+  // hasta el último día completo: si entran cierres nuevos, el simulador los ve sin relanzar la corrida
+  const last = (await db.prepare("SELECT MAX(date) AS d FROM market_days WHERE status = 'complete'").first<{ d: string | null }>())?.d ?? run.end_date;
+  const end = last > run.end_date ? last : run.end_date;
+  const c = contextFromPanel(await loadPanel(db, end));
+  const lineup = withDependencies(investorId);
+  const self = lineup[lineup.length - 1];
+  const lab = runLab(c, { start: run.start_date, end, monkeys: 0, lineup });
+  const pos = lab.investors[self.name].positions;
+  const win = lab.window;
+  const round = (x: number) => (Number.isFinite(x) ? Math.round(x * 1e4) / 1e4 : null);
+  return {
+    investor: { id: self.id, name: self.name, family: self.family },
+    start: run.start_date,
+    end,
+    dates: win.map((t) => c.dates[t]),
+    symbols: c.symbols,
+    closes: c.C.map((serie) => win.map((t) => round(serie[t]))),
+    positions: pos.map((serie) => win.map((t) => serie[t])),
+  };
 }
