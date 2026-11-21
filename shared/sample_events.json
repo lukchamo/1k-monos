@@ -1,0 +1,903 @@
+[
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "19241189573720c4",
+    "source": {
+      "name": "NPR",
+      "url": "https://www.npr.org/2026/11/05/nx-s1-6031987/stock-markets-ai-midterm-elections",
+      "domain": "www.npr.org",
+      "tier": "tier2",
+      "kind": "news",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-05T00:00:00Z",
+      "time_known": false,
+      "market_session": "unknown",
+      "effective_at": "2026-11-06T14:30:00Z"
+    },
+    "content": {
+      "title": "Fears of an AI crackdown after midterms spark $2 trillion rout in tech stocks",
+      "summary_es": "El Nasdaq cae más de 5% por temor a que un Congreso demócrata frene la IA y los centros de datos."
+    },
+    "entities": [
+      {
+        "symbol": "QQQ",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.9,
+        "sentiment": -0.8,
+        "confidence": 0.85
+      },
+      {
+        "symbol": "NVDA",
+        "asset_class": "equity",
+        "role": "secondary",
+        "relevance": 0.7,
+        "sentiment": -0.6,
+        "confidence": 0.75
+      },
+      {
+        "symbol": "CRWV",
+        "asset_class": "equity",
+        "role": "secondary",
+        "relevance": 0.7,
+        "sentiment": -0.7,
+        "confidence": 0.7
+      }
+    ],
+    "classification": {
+      "event_type": "election_policy",
+      "secondary_event_types": [
+        "market_selloff"
+      ],
+      "themes": [
+        "regulation_ai",
+        "data_centers",
+        "ai_capex",
+        "us_politics"
+      ],
+      "macro_factors": [
+        "policy_uncertainty",
+        "risk_off"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.7,
+      "novelty": 0.9,
+      "magnitude": "high",
+      "horizon": "weeks",
+      "hype": 0.2,
+      "uncertainty": 0.3
+    },
+    "facts": [
+      {
+        "metric": "nasdaq_drop",
+        "value": 5,
+        "unit": "%",
+        "period": "2026-11-05",
+        "vs_expectation": "unknown"
+      },
+      {
+        "metric": "market_value_lost",
+        "value": 2,
+        "unit": "trillion_usd",
+        "period": "2026-11-05",
+        "vs_expectation": "unknown"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "QQQ",
+      "ret_1d": 0.013986554362104942,
+      "reaction_divergence": true
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "3113a4f971242e72",
+    "source": {
+      "name": "Reuters",
+      "url": "https://www.reuters.com/business/retail-consumer/nvidia-ceo-jensen-huang-step-down-big-blow-ai-boom-2026-11-12/",
+      "domain": "www.reuters.com",
+      "tier": "tier1",
+      "kind": "wire",
+      "language": "en",
+      "paywalled": true
+    },
+    "timing": {
+      "published_at": "2026-11-12T00:00:00Z",
+      "time_known": false,
+      "market_session": "unknown",
+      "effective_at": "2026-11-13T14:30:00Z"
+    },
+    "content": {
+      "title": "Nvidia CEO Jensen Huang resigns in blow to AI boom he helped foster",
+      "summary_es": "Jensen Huang deja Nvidia tras un escándalo personal con implicaciones de seguridad nacional; la CFO Colette Kress asume como CEO interina."
+    },
+    "entities": [
+      {
+        "symbol": "NVDA",
+        "asset_class": "equity",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": -0.75,
+        "confidence": 0.9
+      },
+      {
+        "symbol": "QQQ",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.5,
+        "sentiment": -0.3,
+        "confidence": 0.6
+      }
+    ],
+    "classification": {
+      "event_type": "executive_change",
+      "secondary_event_types": [
+        "governance_scandal"
+      ],
+      "themes": [
+        "semiconductors",
+        "ai_capex",
+        "china"
+      ],
+      "macro_factors": [
+        "policy_uncertainty"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.9,
+      "novelty": 1.0,
+      "magnitude": "high",
+      "horizon": "weeks",
+      "hype": 0.2,
+      "uncertainty": 0.2
+    },
+    "facts": [],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": true,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "NVDA",
+      "ret_1d": -0.02009747878933754,
+      "reaction_divergence": false
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "5a63bd05a1468e1c",
+    "source": {
+      "name": "CNBC",
+      "url": "https://www.cnbc.com/2026/11/13/treasury-yields-fed-rates.html",
+      "domain": "www.cnbc.com",
+      "tier": "tier2",
+      "kind": "news",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-13T00:00:00Z",
+      "time_known": false,
+      "market_session": "unknown",
+      "effective_at": "2026-11-16T14:30:00Z"
+    },
+    "content": {
+      "title": "10-year Treasury yield moves to 5.17% as traders weigh producer price report",
+      "summary_es": "Los precios al productor suben 6,5% anual, el mayor alza desde 2022; el mercado da por segura una subida de tipos de la Fed en diciembre."
+    },
+    "entities": [
+      {
+        "symbol": "TLT",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.9,
+        "sentiment": -0.6,
+        "confidence": 0.8
+      },
+      {
+        "symbol": "SPY",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.5,
+        "sentiment": -0.3,
+        "confidence": 0.6
+      },
+      {
+        "symbol": "QQQ",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.5,
+        "sentiment": -0.35,
+        "confidence": 0.6
+      }
+    ],
+    "classification": {
+      "event_type": "inflation_data",
+      "secondary_event_types": [
+        "rates_move"
+      ],
+      "themes": [
+        "rates",
+        "inflation"
+      ],
+      "macro_factors": [
+        "rates_up",
+        "inflation_up",
+        "liquidity_tightening"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.6,
+      "novelty": 0.8,
+      "magnitude": "medium",
+      "horizon": "days",
+      "hype": 0.1,
+      "uncertainty": 0.1
+    },
+    "facts": [
+      {
+        "metric": "us10y_yield",
+        "value": 5.17,
+        "unit": "%",
+        "period": "2026-11-13",
+        "vs_expectation": "unknown"
+      },
+      {
+        "metric": "ppi_yoy",
+        "value": 6.5,
+        "unit": "%",
+        "period": "oct-2026",
+        "vs_expectation": "above"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "TLT",
+      "ret_1d": 0.0,
+      "reaction_divergence": false
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "a304827d17a13e64",
+    "source": {
+      "name": "Bitbo / Glassnode",
+      "url": "https://bitbo.io/news/glassnode-bitcoin-weekly-selloff/",
+      "domain": "bitbo.io",
+      "tier": "tier3",
+      "kind": "analysis",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-16T00:00:00Z",
+      "time_known": false,
+      "market_session": "unknown",
+      "effective_at": "2026-11-17T14:30:00Z"
+    },
+    "content": {
+      "title": "Glassnode: Bitcoin Drops 13% as ETF Outflows and Losses Mount",
+      "summary_es": "Bitcoin cierra la semana cerca de 13% abajo, alrededor de 64.000 USD, con salidas de los ETF y vendedores al mando."
+    },
+    "entities": [
+      {
+        "symbol": "BTC-USD",
+        "asset_class": "crypto",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": -0.7,
+        "confidence": 0.8
+      },
+      {
+        "symbol": "COIN",
+        "asset_class": "equity",
+        "role": "secondary",
+        "relevance": 0.5,
+        "sentiment": -0.4,
+        "confidence": 0.6
+      },
+      {
+        "symbol": "ETH-USD",
+        "asset_class": "crypto",
+        "role": "competitor",
+        "relevance": 0.4,
+        "sentiment": -0.4,
+        "confidence": 0.5
+      }
+    ],
+    "classification": {
+      "event_type": "etf_flows",
+      "secondary_event_types": [
+        "market_selloff"
+      ],
+      "themes": [
+        "crypto_etf"
+      ],
+      "macro_factors": [
+        "risk_off",
+        "liquidity_tightening"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.3,
+      "novelty": 0.4,
+      "magnitude": "medium",
+      "horizon": "days",
+      "hype": 0.2,
+      "uncertainty": 0.2
+    },
+    "facts": [
+      {
+        "metric": "btc_weekly_change",
+        "value": -13,
+        "unit": "%",
+        "period": "semana al 15-nov",
+        "vs_expectation": "unknown"
+      },
+      {
+        "metric": "btc_price",
+        "value": 64000,
+        "unit": "usd",
+        "period": "2026-11-15",
+        "vs_expectation": "unknown"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 1
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "BTC-USD",
+      "ret_1d": 0.0005874721173932951,
+      "reaction_divergence": true
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "7c30239d86c255ac",
+    "source": {
+      "name": "Forbes",
+      "url": "https://www.forbes.com/sites/fionariley/2026/11/17/nvidia-reports-strong-1158-billion-quarterly-revenue-in-first-earnings-post-jensen-huang/",
+      "domain": "www.forbes.com",
+      "tier": "tier2",
+      "kind": "news",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-17T21:30:00Z",
+      "time_known": true,
+      "market_session": "post",
+      "effective_at": "2026-11-18T14:30:00Z"
+    },
+    "content": {
+      "title": "Nvidia Earnings: $115.8 Billion In Q3 Revenue Beats Expectations",
+      "summary_es": "Nvidia reporta ingresos de 115.800 millones en el trimestre y supera las expectativas, en su primer informe sin Jensen Huang."
+    },
+    "entities": [
+      {
+        "symbol": "NVDA",
+        "asset_class": "equity",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": 0.6,
+        "confidence": 0.8
+      },
+      {
+        "symbol": "CRWV",
+        "asset_class": "equity",
+        "role": "customer",
+        "relevance": 0.4,
+        "sentiment": 0.2,
+        "confidence": 0.5
+      }
+    ],
+    "classification": {
+      "event_type": "earnings_beat",
+      "secondary_event_types": [],
+      "themes": [
+        "semiconductors",
+        "ai_capex"
+      ],
+      "macro_factors": [],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bullish",
+      "surprise": 0.5,
+      "novelty": 0.9,
+      "magnitude": "high",
+      "horizon": "days",
+      "hype": 0.2,
+      "uncertainty": 0.1
+    },
+    "facts": [
+      {
+        "metric": "revenue",
+        "value": 115.8,
+        "unit": "billion_usd",
+        "period": "Q3 FY27",
+        "vs_expectation": "above"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "NVDA",
+      "ret_1d": -0.028946352759552263,
+      "reaction_divergence": true
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "345770681ada9e44",
+    "source": {
+      "name": "Reuters",
+      "url": "https://www.reuters.com/world/india/gold-slides-over-one-year-low-firm-dollar-us-rate-outlook-2026-11-18/",
+      "domain": "www.reuters.com",
+      "tier": "tier1",
+      "kind": "wire",
+      "language": "en",
+      "paywalled": true
+    },
+    "timing": {
+      "published_at": "2026-11-18T00:00:00Z",
+      "time_known": false,
+      "market_session": "unknown",
+      "effective_at": "2026-11-19T14:30:00Z"
+    },
+    "content": {
+      "title": "Gold drops to 14-month low as dollar, yields rise on hawkish Fed rhetoric",
+      "summary_es": "El oro cae más de 3% a mínimos de 14 meses por señales duras de la Fed; un gobernador pide subir medio punto en diciembre."
+    },
+    "entities": [
+      {
+        "symbol": "GLD",
+        "asset_class": "etf",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": -0.7,
+        "confidence": 0.85
+      },
+      {
+        "symbol": "TLT",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.6,
+        "sentiment": -0.5,
+        "confidence": 0.7
+      }
+    ],
+    "classification": {
+      "event_type": "central_bank_guidance",
+      "secondary_event_types": [
+        "rates_move"
+      ],
+      "themes": [
+        "rates",
+        "inflation"
+      ],
+      "macro_factors": [
+        "rates_up",
+        "usd_up",
+        "liquidity_tightening"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.5,
+      "novelty": 0.8,
+      "magnitude": "medium",
+      "horizon": "weeks",
+      "hype": 0.1,
+      "uncertainty": 0.15
+    },
+    "facts": [
+      {
+        "metric": "gold_drop",
+        "value": 3,
+        "unit": "%",
+        "period": "2026-11-18",
+        "vs_expectation": "unknown"
+      },
+      {
+        "metric": "p_50bp_hike",
+        "value": 7.3,
+        "unit": "%",
+        "period": "dic-2026",
+        "vs_expectation": "unknown"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": true,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "GLD",
+      "ret_1d": -0.01761481872270576,
+      "reaction_divergence": false
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "6e97b7b7a019bcdd",
+    "source": {
+      "name": "Forbes",
+      "url": "https://www.forbes.com/sites/fionariley/2026/11/19/anthropic-ipo-live-shares-pop-34-to-open-at-11150/",
+      "domain": "www.forbes.com",
+      "tier": "tier2",
+      "kind": "news",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-19T21:05:00Z",
+      "time_known": true,
+      "market_session": "post",
+      "effective_at": "2026-11-20T14:30:00Z"
+    },
+    "content": {
+      "title": "Anthropic IPO Live: Stock Closes Day At $97—Up More Than 17%",
+      "summary_es": "Anthropic abre a 111,50 y cierra su primer día a 97,17, un 17% sobre el precio de salida de 83."
+    },
+    "entities": [
+      {
+        "symbol": "ANT",
+        "asset_class": "equity",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": 0.4,
+        "confidence": 0.75
+      },
+      {
+        "symbol": "SPCX",
+        "asset_class": "equity",
+        "role": "competitor",
+        "relevance": 0.4,
+        "sentiment": -0.2,
+        "confidence": 0.5
+      }
+    ],
+    "classification": {
+      "event_type": "ipo_debut",
+      "secondary_event_types": [
+        "liquidity_supply"
+      ],
+      "themes": [
+        "mega_ipo",
+        "ai_models"
+      ],
+      "macro_factors": [
+        "liquidity_tightening"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "mixed",
+      "surprise": 0.4,
+      "novelty": 1.0,
+      "magnitude": "high",
+      "horizon": "days",
+      "hype": 0.4,
+      "uncertainty": 0.2
+    },
+    "facts": [
+      {
+        "metric": "ipo_price",
+        "value": 83,
+        "unit": "usd",
+        "period": "2026-11-19",
+        "vs_expectation": "above"
+      },
+      {
+        "metric": "open",
+        "value": 111.5,
+        "unit": "usd",
+        "period": "2026-11-19",
+        "vs_expectation": "unknown"
+      },
+      {
+        "metric": "close",
+        "value": 97.17,
+        "unit": "usd",
+        "period": "2026-11-19",
+        "vs_expectation": "unknown"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    },
+    "outcome": {
+      "symbol": "ANT",
+      "ret_1d": -0.08500566018318412,
+      "reaction_divergence": true
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "e577f6bd45353f5e",
+    "source": {
+      "name": "Reuters",
+      "url": "https://www.reuters.com/business/anthropics-post-debut-stumble-delivers-reality-check-ai-trade-2026-11-20/",
+      "domain": "www.reuters.com",
+      "tier": "tier1",
+      "kind": "wire",
+      "language": "en",
+      "paywalled": true
+    },
+    "timing": {
+      "published_at": "2026-11-20T22:00:00Z",
+      "time_known": true,
+      "market_session": "post",
+      "effective_at": "2026-11-23T14:30:00Z"
+    },
+    "content": {
+      "title": "Anthropic's post-debut stumble delivers reality check for AI trade",
+      "summary_es": "Anthropic cae en su segundo día y SpaceX baja cerca de 8%; el desarme global de la apuesta por la IA pesa más que el entusiasmo de la salida."
+    },
+    "entities": [
+      {
+        "symbol": "ANT",
+        "asset_class": "equity",
+        "role": "primary",
+        "relevance": 1.0,
+        "sentiment": -0.6,
+        "confidence": 0.8
+      },
+      {
+        "symbol": "SPCX",
+        "asset_class": "equity",
+        "role": "competitor",
+        "relevance": 0.6,
+        "sentiment": -0.5,
+        "confidence": 0.7
+      },
+      {
+        "symbol": "QQQ",
+        "asset_class": "etf",
+        "role": "sector_proxy",
+        "relevance": 0.5,
+        "sentiment": -0.4,
+        "confidence": 0.6
+      }
+    ],
+    "classification": {
+      "event_type": "market_selloff",
+      "secondary_event_types": [
+        "liquidity_supply"
+      ],
+      "themes": [
+        "mega_ipo",
+        "ai_models"
+      ],
+      "macro_factors": [
+        "risk_off",
+        "liquidity_tightening"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.4,
+      "novelty": 0.8,
+      "magnitude": "medium",
+      "horizon": "days",
+      "hype": 0.3,
+      "uncertainty": 0.2
+    },
+    "facts": [
+      {
+        "metric": "spcx_drop",
+        "value": 8,
+        "unit": "%",
+        "period": "2026-11-20",
+        "vs_expectation": "unknown"
+      }
+    ],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": true,
+      "corroborating_sources": 3
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    }
+  },
+  {
+    "schema_version": "news-event-1.0",
+    "event_id": "3b4b3c6fb070c843",
+    "source": {
+      "name": "Benzinga",
+      "url": "https://www.benzinga.com/news/politics/26/11/63514897/schumer-trump-ai-chip-exports-china",
+      "domain": "www.benzinga.com",
+      "tier": "tier3",
+      "kind": "news",
+      "language": "en",
+      "paywalled": false
+    },
+    "timing": {
+      "published_at": "2026-11-21T07:25:58Z",
+      "time_known": true,
+      "market_session": "post",
+      "effective_at": "2026-11-23T14:30:00Z"
+    },
+    "content": {
+      "title": "Schumer critica la aprobación de ventas de chips de IA de Nvidia y AMD a China",
+      "summary_es": "El líder demócrata del Senado ataca al gobierno por autorizar exportaciones de chips de IA a China; tono político y polémico."
+    },
+    "entities": [
+      {
+        "symbol": "NVDA",
+        "asset_class": "equity",
+        "role": "primary",
+        "relevance": 0.8,
+        "sentiment": -0.2,
+        "confidence": 0.5
+      }
+    ],
+    "classification": {
+      "event_type": "export_controls_trade",
+      "secondary_event_types": [
+        "opinion_commentary"
+      ],
+      "themes": [
+        "china",
+        "semiconductors",
+        "us_politics"
+      ],
+      "macro_factors": [
+        "policy_uncertainty"
+      ],
+      "regions": [
+        "US"
+      ]
+    },
+    "signal": {
+      "direction": "bearish",
+      "surprise": 0.3,
+      "novelty": 0.5,
+      "magnitude": "low",
+      "horizon": "weeks",
+      "hype": 0.6,
+      "uncertainty": 0.4
+    },
+    "facts": [],
+    "credibility": {
+      "is_rumor": false,
+      "official_confirmation": false,
+      "corroborating_sources": 1
+    },
+    "extraction": {
+      "provider": "manual",
+      "model": "claude (demo manual en chat)",
+      "gateway": "n/a en la demo; producción: Cloudflare AI Gateway",
+      "prompt_version": "extract-1.0",
+      "taxonomy_version": "tax-1.0",
+      "temperature": 0,
+      "anonymized": false,
+      "validated": true
+    }
+  }
+]

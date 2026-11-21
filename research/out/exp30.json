@@ -1,0 +1,437 @@
+{
+ "n_tesis": 28,
+ "resultados": [
+  {
+   "nombre": "Elástico 10 z1.5",
+   "familia": "Reversión",
+   "retorno": 6.182288089222943,
+   "sharpe": 0.4908915095290866,
+   "max_dd": -8.848618535066366,
+   "pct_monos": 94.19999999999999,
+   "dsr": 19.349681428519293,
+   "trades": 921
+  },
+  {
+   "nombre": "Intuición k=25",
+   "familia": "Intuición",
+   "retorno": 1.591488271479058,
+   "sharpe": 0.18168904768563401,
+   "max_dd": -9.372166611542209,
+   "pct_monos": 85.25,
+   "dsr": 11.993821570090091,
+   "trades": 2560
+  },
+  {
+   "nombre": "Elástico 20 z2.0",
+   "familia": "Reversión",
+   "retorno": -1.1709219161808782,
+   "sharpe": -0.032720876857678244,
+   "max_dd": -7.790161499804227,
+   "pct_monos": 74.8,
+   "dsr": 8.280750552834808,
+   "trades": 401
+  },
+  {
+   "nombre": "Macro VIX±10%",
+   "familia": "Macro",
+   "retorno": -1.4799638857803332,
+   "sharpe": -0.08837725899371379,
+   "max_dd": -11.548630461260478,
+   "pct_monos": 74.15,
+   "dsr": 7.458883029104523,
+   "trades": 1049
+  },
+  {
+   "nombre": "Elástico 10 z2.0",
+   "familia": "Reversión",
+   "retorno": -2.255252521918283,
+   "sharpe": -0.21855835150300218,
+   "max_dd": -6.849225900022127,
+   "pct_monos": 70.7,
+   "dsr": 5.840566917589013,
+   "trades": 473
+  },
+  {
+   "nombre": "Cazador 55/20",
+   "familia": "Ruptura",
+   "retorno": -2.6854424262277132,
+   "sharpe": -0.16032784515069975,
+   "max_dd": -17.97305034826142,
+   "pct_monos": 69.19999999999999,
+   "dsr": 6.539972201161548,
+   "trades": 223
+  },
+  {
+   "nombre": "El Mono",
+   "familia": "Control",
+   "retorno": -3.0065121784453863,
+   "sharpe": -0.3681237310858192,
+   "max_dd": -5.775804444485599,
+   "pct_monos": 67.5,
+   "dsr": 4.246134869922546,
+   "trades": 751
+  },
+  {
+   "nombre": "Intuición k=75",
+   "familia": "Intuición",
+   "retorno": -3.2793712597313895,
+   "sharpe": -0.20460052509588544,
+   "max_dd": -9.406449339127732,
+   "pct_monos": 66.05,
+   "dsr": 5.975641378064145,
+   "trades": 1853
+  },
+  {
+   "nombre": "Abogado (4 de tesis)",
+   "familia": "Antagonista",
+   "retorno": -3.3946484810685518,
+   "sharpe": -0.26626675072246025,
+   "max_dd": -7.3792208405486175,
+   "pct_monos": 65.7,
+   "dsr": 5.255654807309251,
+   "trades": 1105
+  },
+  {
+   "nombre": "Macro VIX±3%",
+   "familia": "Macro",
+   "retorno": -3.9394092913726864,
+   "sharpe": -0.15269869681911322,
+   "max_dd": -19.526491337770736,
+   "pct_monos": 63.2,
+   "dsr": 6.561272153473779,
+   "trades": 1449
+  },
+  {
+   "nombre": "Elástico 20 z1.5",
+   "familia": "Reversión",
+   "retorno": -3.946623631413171,
+   "sharpe": -0.18747897474255337,
+   "max_dd": -11.413919689081887,
+   "pct_monos": 63.2,
+   "dsr": 6.195879602558274,
+   "trades": 558
+  },
+  {
+   "nombre": "Cazador 40/20",
+   "familia": "Ruptura",
+   "retorno": -4.584092000660389,
+   "sharpe": -0.2801570480393889,
+   "max_dd": -15.664520980880647,
+   "pct_monos": 59.650000000000006,
+   "dsr": 5.1412244932817375,
+   "trades": 254
+  },
+  {
+   "nombre": "Macro solo tipos",
+   "familia": "Macro",
+   "retorno": -5.326910385333972,
+   "sharpe": -0.18085017515044047,
+   "max_dd": -21.873369000710696,
+   "pct_monos": 56.10000000000001,
+   "dsr": 6.222577965915482,
+   "trades": 403
+  },
+  {
+   "nombre": "Tendencia 50/20",
+   "familia": "Momentum",
+   "retorno": -5.402850336262677,
+   "sharpe": -0.31419650647258146,
+   "max_dd": -16.972574854729984,
+   "pct_monos": 55.7,
+   "dsr": 4.796112929109819,
+   "trades": 865
+  },
+  {
+   "nombre": "Abogado (contra todos)",
+   "familia": "Antagonista",
+   "retorno": -5.645853997155115,
+   "sharpe": -0.8561976801024118,
+   "max_dd": -5.6062905529673195,
+   "pct_monos": 54.7,
+   "dsr": 1.2901800577409084,
+   "trades": 494
+  },
+  {
+   "nombre": "Tendencia 30/5",
+   "familia": "Momentum",
+   "retorno": -5.73006674543276,
+   "sharpe": -0.3473020312539929,
+   "max_dd": -17.830635076234103,
+   "pct_monos": 54.15,
+   "dsr": 4.468916848663501,
+   "trades": 1555
+  },
+  {
+   "nombre": "Cazador 20/10",
+   "familia": "Ruptura",
+   "retorno": -6.519663089858863,
+   "sharpe": -0.44152932064391825,
+   "max_dd": -16.940372629933854,
+   "pct_monos": 49.9,
+   "dsr": 3.6525768395242797,
+   "trades": 477
+  },
+  {
+   "nombre": "Tendencia 100/20",
+   "familia": "Momentum",
+   "retorno": -7.3916257514284105,
+   "sharpe": -0.5191957814020072,
+   "max_dd": -20.879396339240785,
+   "pct_monos": 44.3,
+   "dsr": 3.0847229195265893,
+   "trades": 790
+  },
+  {
+   "nombre": "Tendencia 50/60",
+   "familia": "Momentum",
+   "retorno": -7.975847481536713,
+   "sharpe": -0.5451974566393174,
+   "max_dd": -23.902634159660774,
+   "pct_monos": 40.699999999999996,
+   "dsr": 2.940204762218346,
+   "trades": 715
+  },
+  {
+   "nombre": "Elástico 40 z1.5",
+   "familia": "Reversión",
+   "retorno": -8.032159246671078,
+   "sharpe": -0.5101695328301431,
+   "max_dd": -14.525271606376155,
+   "pct_monos": 40.6,
+   "dsr": 3.067511062991896,
+   "trades": 333
+  },
+  {
+   "nombre": "Macro VIX±5%",
+   "familia": "Macro",
+   "retorno": -8.140462110953417,
+   "sharpe": -0.489936192889523,
+   "max_dd": -19.37387366601736,
+   "pct_monos": 40.050000000000004,
+   "dsr": 3.1592347761667137,
+   "trades": 1567
+  },
+  {
+   "nombre": "Cazador 10/5",
+   "familia": "Ruptura",
+   "retorno": -8.258634221225481,
+   "sharpe": -0.5556986358761951,
+   "max_dd": -19.547163182124383,
+   "pct_monos": 39.550000000000004,
+   "dsr": 2.7674623075620355,
+   "trades": 885
+  },
+  {
+   "nombre": "Elástico 20 z1.0",
+   "familia": "Reversión",
+   "retorno": -8.38208687494909,
+   "sharpe": -0.4721144247802604,
+   "max_dd": -13.470986634517057,
+   "pct_monos": 38.800000000000004,
+   "dsr": 3.40636007578487,
+   "trades": 683
+  },
+  {
+   "nombre": "Abogado (contra momentum)",
+   "familia": "Antagonista",
+   "retorno": -8.496657867229185,
+   "sharpe": -0.5182984275434364,
+   "max_dd": -13.511840973996614,
+   "pct_monos": 38.15,
+   "dsr": 3.0743920237988718,
+   "trades": 1154
+  },
+  {
+   "nombre": "Compra y mantén",
+   "familia": "Control",
+   "retorno": -8.837612824338025,
+   "sharpe": -0.3620122265744456,
+   "max_dd": -20.4545709731506,
+   "pct_monos": 35.949999999999996,
+   "dsr": 4.29048869386116,
+   "trades": 1
+  },
+  {
+   "nombre": "Tendencia 20/10",
+   "familia": "Momentum",
+   "retorno": -11.50465080768307,
+   "sharpe": -0.7460763307151909,
+   "max_dd": -24.510065352169597,
+   "pct_monos": 22.05,
+   "dsr": 1.7734863181453286,
+   "trades": 1252
+  },
+  {
+   "nombre": "Racha 60 días",
+   "familia": "Racha",
+   "retorno": -18.728467425608542,
+   "sharpe": -2.076606622618147,
+   "max_dd": -25.297601390996206,
+   "pct_monos": 2.25,
+   "dsr": 0.025549660006973784,
+   "trades": 998
+  },
+  {
+   "nombre": "Racha 20 días",
+   "familia": "Racha",
+   "retorno": -19.591778052191845,
+   "sharpe": -1.9781159800553192,
+   "max_dd": -26.009048832328673,
+   "pct_monos": 1.4000000000000001,
+   "dsr": 0.035084851880679,
+   "trades": 1346
+  },
+  {
+   "nombre": "Cazador 5/3",
+   "familia": "Ruptura",
+   "retorno": -20.09637316911729,
+   "sharpe": -1.5318212359703396,
+   "max_dd": -28.14522941056704,
+   "pct_monos": 1.25,
+   "dsr": 0.19774732846328802,
+   "trades": 1469
+  },
+  {
+   "nombre": "Racha con perdón",
+   "familia": "Racha",
+   "retorno": -20.623486547828417,
+   "sharpe": -2.467112059107519,
+   "max_dd": -24.79585870392629,
+   "pct_monos": 1.05,
+   "dsr": 0.003017686027051436,
+   "trades": 1016
+  }
+ ],
+ "segmentos": [
+  {
+   "segmento": "EE. UU. índices",
+   "tipo": "mercado",
+   "activos": 2,
+   "compra_mantener": 3.565918474688079,
+   "mejor": "Intuición k=25",
+   "familia": "Intuición",
+   "mejor_ret": 12.725333372836767,
+   "pct_monos": 96.05,
+   "umbral_suerte_p95": 28.16078324588991,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "EE. UU. tecnología e IA",
+   "tipo": "mercado",
+   "activos": 6,
+   "compra_mantener": -21.274691290040526,
+   "mejor": "Elástico 10 z1.5",
+   "familia": "Reversión",
+   "mejor_ret": 56.68015817254142,
+   "pct_monos": 99.0,
+   "umbral_suerte_p95": 86.35607957083211,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Cripto",
+   "tipo": "economía",
+   "activos": 4,
+   "compra_mantener": -48.06183069129385,
+   "mejor": "Intuición k=25",
+   "familia": "Intuición",
+   "mejor_ret": 48.27550568064141,
+   "pct_monos": 97.65,
+   "umbral_suerte_p95": 87.50910177141593,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Refugio y tipos",
+   "tipo": "mercado",
+   "activos": 2,
+   "compra_mantener": -8.971977079787475,
+   "mejor": "Cazador 20/10",
+   "familia": "Ruptura",
+   "mejor_ret": 13.342828309718314,
+   "pct_monos": 91.7,
+   "umbral_suerte_p95": 40.7940278337795,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Materias primas",
+   "tipo": "mercado",
+   "activos": 1,
+   "compra_mantener": 96.99492099322823,
+   "mejor": "Cazador 20/10",
+   "familia": "Ruptura",
+   "mejor_ret": 78.61986251334181,
+   "pct_monos": 95.5,
+   "umbral_suerte_p95": 188.295867170802,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Europa",
+   "tipo": "mercado",
+   "activos": 3,
+   "compra_mantener": 11.912969147565565,
+   "mejor": "Elástico 10 z1.5",
+   "familia": "Reversión",
+   "mejor_ret": 9.456764717021237,
+   "pct_monos": 92.80000000000001,
+   "umbral_suerte_p95": 28.200720372607478,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Asia desarrollada",
+   "tipo": "mercado",
+   "activos": 1,
+   "compra_mantener": 7.860584086459288,
+   "mejor": "Cazador 10/5",
+   "familia": "Ruptura",
+   "mejor_ret": 10.558498351029755,
+   "pct_monos": 84.0,
+   "umbral_suerte_p95": 51.65668338807477,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Emergentes",
+   "tipo": "economía",
+   "activos": 4,
+   "compra_mantener": -3.287979941635366,
+   "mejor": "Elástico 40 z1.5",
+   "familia": "Reversión",
+   "mejor_ret": 8.251840965857603,
+   "pct_monos": 89.4,
+   "umbral_suerte_p95": 28.374028481689017,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Desarrolladas",
+   "tipo": "economía",
+   "activos": 12,
+   "compra_mantener": -6.409734938475909,
+   "mejor": "Elástico 10 z1.5",
+   "familia": "Reversión",
+   "mejor_ret": 30.64149373486518,
+   "pct_monos": 99.5,
+   "umbral_suerte_p95": 38.567903461136495,
+   "supera_suerte": false
+  },
+  {
+   "segmento": "Materias primas y refugio",
+   "tipo": "economía",
+   "activos": 3,
+   "compra_mantener": 26.35032227788443,
+   "mejor": "Cazador 20/10",
+   "familia": "Ruptura",
+   "mejor_ret": 35.10183971092615,
+   "pct_monos": 98.15,
+   "umbral_suerte_p95": 57.94389902617212,
+   "supera_suerte": false
+  }
+ ],
+ "monos": {
+  "p05": -17.089651992008694,
+  "p50": -6.4836367094740055,
+  "p95": 6.692174424543119
+ },
+ "mejor_de_n_monos": {
+  "p50": 9.718150686294802,
+  "p95": 20.868398963585342
+ },
+ "emax_sr_anual": 1.3565002249126301
+}

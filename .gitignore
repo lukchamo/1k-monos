@@ -1,0 +1,14 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+.next/
+.open-next/
+dist/
+seed/
+*.log
+.DS_Store
+__pycache__/
+cloudflare-env.d.ts

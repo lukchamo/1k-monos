@@ -1,0 +1,567 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://luchoia.dev/schemas/news-event-v1.json",
+  "title": "NewsEvent v1",
+  "description": "Metadatos de una noticia. Bloques llm_* los llena la IA desde el texto; bloques computed_* los llena el Worker con datos de mercado; outcome se llena después y nunca lo ven los inversionistas antes de su horizonte.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "source",
+    "timing",
+    "content",
+    "entities",
+    "classification",
+    "signal",
+    "extraction"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "news-event-1.0"
+    },
+    "event_id": {
+      "type": "string",
+      "description": "sha256(url canónica + published_at)"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "name",
+        "url",
+        "tier",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "tier1",
+            "tier2",
+            "tier3",
+            "tier4"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "wire",
+            "regulatory_filing",
+            "press_release",
+            "news",
+            "analysis",
+            "blog",
+            "social"
+          ]
+        },
+        "language": {
+          "type": "string"
+        },
+        "paywalled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "required": [
+        "published_at",
+        "time_known",
+        "effective_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "published_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "time_known": {
+          "type": "boolean",
+          "description": "false = solo se conoce el día"
+        },
+        "first_seen_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "market_session": {
+          "enum": [
+            "pre",
+            "regular",
+            "post",
+            "closed",
+            "unknown"
+          ]
+        },
+        "effective_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "primer momento en que un inversionista puede actuar: calculado por el Worker, nunca por el LLM"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "title",
+        "summary_es"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "summary_es": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "content_hash": {
+          "type": "string"
+        },
+        "word_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "symbol",
+          "role",
+          "relevance",
+          "sentiment",
+          "confidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "asset_class": {
+            "enum": [
+              "equity",
+              "etf",
+              "index",
+              "crypto",
+              "commodity",
+              "fx",
+              "rates"
+            ]
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "secondary",
+              "competitor",
+              "supplier",
+              "customer",
+              "sector_proxy",
+              "mentioned"
+            ]
+          },
+          "relevance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "sentiment": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": [
+        "event_type",
+        "themes",
+        "macro_factors"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "event_type": {
+          "enum": [
+            "earnings_beat",
+            "earnings_miss",
+            "guidance_raise",
+            "guidance_cut",
+            "executive_change",
+            "governance_scandal",
+            "m_and_a",
+            "ipo_pricing",
+            "ipo_debut",
+            "secondary_offering",
+            "lockup_expiry",
+            "buyback_dividend",
+            "product_launch",
+            "partnership_contract",
+            "legal_regulatory_action",
+            "export_controls_trade",
+            "analyst_rating_change",
+            "insider_transaction",
+            "index_inclusion",
+            "short_report",
+            "security_incident",
+            "central_bank_decision",
+            "central_bank_guidance",
+            "inflation_data",
+            "jobs_data",
+            "growth_data",
+            "rates_move",
+            "election_policy",
+            "fiscal_policy",
+            "geopolitical_conflict",
+            "commodity_shock",
+            "etf_flows",
+            "exchange_hack",
+            "crypto_regulation",
+            "protocol_event",
+            "liquidation_cascade",
+            "market_selloff",
+            "market_rally",
+            "sector_rotation",
+            "liquidity_supply",
+            "volatility_spike",
+            "opinion_commentary"
+          ]
+        },
+        "secondary_event_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "earnings_beat",
+              "earnings_miss",
+              "guidance_raise",
+              "guidance_cut",
+              "executive_change",
+              "governance_scandal",
+              "m_and_a",
+              "ipo_pricing",
+              "ipo_debut",
+              "secondary_offering",
+              "lockup_expiry",
+              "buyback_dividend",
+              "product_launch",
+              "partnership_contract",
+              "legal_regulatory_action",
+              "export_controls_trade",
+              "analyst_rating_change",
+              "insider_transaction",
+              "index_inclusion",
+              "short_report",
+              "security_incident",
+              "central_bank_decision",
+              "central_bank_guidance",
+              "inflation_data",
+              "jobs_data",
+              "growth_data",
+              "rates_move",
+              "election_policy",
+              "fiscal_policy",
+              "geopolitical_conflict",
+              "commodity_shock",
+              "etf_flows",
+              "exchange_hack",
+              "crypto_regulation",
+              "protocol_event",
+              "liquidation_cascade",
+              "market_selloff",
+              "market_rally",
+              "sector_rotation",
+              "liquidity_supply",
+              "volatility_spike",
+              "opinion_commentary"
+            ]
+          }
+        },
+        "themes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ai_capex",
+              "ai_models",
+              "semiconductors",
+              "data_centers",
+              "cloud",
+              "space",
+              "ev_autonomy",
+              "crypto_etf",
+              "stablecoins",
+              "rates",
+              "inflation",
+              "oil_energy",
+              "banking",
+              "consumer",
+              "china",
+              "regulation_ai",
+              "defense",
+              "mega_ipo",
+              "europe",
+              "us_politics"
+            ]
+          }
+        },
+        "macro_factors": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "rates_up",
+              "rates_down",
+              "inflation_up",
+              "inflation_down",
+              "usd_up",
+              "usd_down",
+              "oil_up",
+              "oil_down",
+              "growth_up",
+              "growth_down",
+              "risk_off",
+              "risk_on",
+              "liquidity_tightening",
+              "liquidity_easing",
+              "policy_uncertainty"
+            ]
+          }
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "signal": {
+      "type": "object",
+      "required": [
+        "direction",
+        "surprise",
+        "novelty",
+        "magnitude",
+        "horizon",
+        "hype",
+        "uncertainty"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "enum": [
+            "bullish",
+            "bearish",
+            "neutral",
+            "mixed"
+          ]
+        },
+        "surprise": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "qué tan inesperado vs lo que el mercado ya esperaba"
+        },
+        "novelty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "1 = primera vez que se informa; 0 = refrito"
+        },
+        "magnitude": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "horizon": {
+          "enum": [
+            "intraday",
+            "days",
+            "weeks",
+            "months"
+          ]
+        },
+        "hype": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "lenguaje promocional o sensacionalista"
+        },
+        "uncertainty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "rumor, fuentes anónimas, hechos sin confirmar"
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "description": "cifras textuales extraídas",
+      "items": {
+        "type": "object",
+        "required": [
+          "metric",
+          "value"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "vs_expectation": {
+            "enum": [
+              "above",
+              "in_line",
+              "below",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "credibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "is_rumor": {
+          "type": "boolean"
+        },
+        "official_confirmation": {
+          "type": "boolean"
+        },
+        "corroborating_sources": {
+          "type": "integer"
+        }
+      }
+    },
+    "dedup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cluster_id": {
+          "type": "string"
+        },
+        "story_rank": {
+          "type": "integer",
+          "description": "1 = primer reporte de la historia"
+        }
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "required": [
+        "model",
+        "prompt_version",
+        "taxonomy_version",
+        "anonymized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "enum": [
+            "workers-ai",
+            "anthropic",
+            "google",
+            "openai",
+            "manual"
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "gateway": {
+          "type": "string"
+        },
+        "prompt_version": {
+          "type": "string"
+        },
+        "taxonomy_version": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "anonymized": {
+          "type": "boolean"
+        },
+        "extracted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "cost_usd": {
+          "type": "number"
+        },
+        "validated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "computed_market_context": {
+      "type": "object",
+      "description": "lo llena el Worker con precios hasta effective_at",
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "ret_1d": {
+          "type": "number"
+        },
+        "ret_5d": {
+          "type": "number"
+        },
+        "vol_20d": {
+          "type": "number"
+        },
+        "vix": {
+          "type": "number"
+        },
+        "dist_sma50": {
+          "type": "number"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "description": "etiqueta ex-post para evaluar; prohibido como entrada de decisión",
+      "properties": {
+        "ret_1d": {
+          "type": "number"
+        },
+        "ret_5d": {
+          "type": "number"
+        },
+        "reaction_divergence": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

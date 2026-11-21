@@ -1,0 +1,93 @@
+{
+ "$schema": "node_modules/wrangler/config-schema.json",
+ "name": "laboratorio-inversionistas",
+ "main": "src/index.ts",
+ "compatibility_date": "2026-11-01",
+ "observability": {
+  "enabled": true,
+  "head_sampling_rate": 1,
+  "logs": {
+   "enabled": true,
+   "invocation_logs": true
+  },
+  "traces": {
+   "enabled": true
+  }
+ },
+ "upload_source_maps": true,
+ "d1_databases": [
+  {
+   "binding": "DB",
+   "database_name": "lab-inversionistas",
+   "database_id": "REEMPLAZAR-CON-EL-ID",
+   "migrations_dir": "migrations"
+  }
+ ],
+ "r2_buckets": [
+  {
+   "binding": "RAW",
+   "bucket_name": "lab-inversionistas-raw"
+  }
+ ],
+ "durable_objects": {
+  "bindings": [
+   {
+    "name": "INVESTOR",
+    "class_name": "InvestorDO"
+   }
+  ]
+ },
+ "migrations": [
+  {
+   "tag": "v1",
+   "new_sqlite_classes": [
+    "InvestorDO"
+   ]
+  }
+ ],
+ "workflows": [
+  {
+   "name": "lab-backtest",
+   "binding": "BACKTEST",
+   "class_name": "BacktestWorkflow"
+  }
+ ],
+ "ratelimits": [
+  {
+   "name": "RL_READ",
+   "namespace_id": "1001",
+   "simple": {
+    "limit": 120,
+    "period": 60
+   }
+  },
+  {
+   "name": "RL_HEAVY",
+   "namespace_id": "1002",
+   "simple": {
+    "limit": 30,
+    "period": 60
+   }
+  },
+  {
+   "name": "RL_WRITE",
+   "namespace_id": "1003",
+   "simple": {
+    "limit": 10,
+    "period": 60
+   }
+  }
+ ],
+ "vars": {
+  "TAXONOMY_VERSION": "tax-1.0",
+  "PROMPT_VERSION": "extract-1.0",
+  "AI_GATEWAY_ID": "lab-inversionistas",
+  "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+ },
+ "triggers": {
+  "crons": [
+   "*/15 * * * *",
+   "30 22 * * 1-5"
+  ]
+ }
+}

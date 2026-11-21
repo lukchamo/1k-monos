@@ -1,0 +1,27 @@
+{
+  "name": "laboratorio-inversionistas-worker",
+  "version": "1.0.0",
+  "description": "Laboratorio de inversionistas determinísticos — Worker de Cloudflare (CooWeb / LuchoIA)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "npm run check && wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p test",
+    "check": "npm run typecheck && npm test",
+    "db:migrate:local": "wrangler d1 migrations apply lab-inversionistas --local -c wrangler.local.json",
+    "db:migrate:remote": "wrangler d1 migrations apply lab-inversionistas --remote",
+    "cf-typegen": "wrangler types",
+    "db:seed:local": "node scripts/seed.mjs && wrangler d1 execute lab-inversionistas --local -c wrangler.local.json --file seed/prices.sql",
+    "dev:local": "wrangler dev -c wrangler.local.json --test-scheduled --var MCP_TOKEN:dev-token"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261121.1",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1",
+    "wrangler": "^4.166.0"
+  },
+  "type": "module",
+  "private": true
+}

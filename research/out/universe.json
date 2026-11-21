@@ -1,0 +1,178 @@
+[
+ {
+  "symbol": "SPY",
+  "name": "S&P 500 (ETF)",
+  "group": "\u00cdndice EE. UU.",
+  "vol_tier": "baja",
+  "first": "2025-11-20",
+  "ret_period": 0.06853644925900193,
+  "vol_annual": 0.1429516974010485,
+  "max_dd": -0.1145952328999218,
+  "last_close": 689.81
+ },
+ {
+  "symbol": "QQQ",
+  "name": "Nasdaq 100 (ETF)",
+  "group": "\u00cdndice EE. UU.",
+  "vol_tier": "media",
+  "first": "2025-11-20",
+  "ret_period": 0.04377687174350453,
+  "vol_annual": 0.223280608513026,
+  "max_dd": -0.19904957480978325,
+  "last_close": 608.45
+ },
+ {
+  "symbol": "MSFT",
+  "name": "Microsoft",
+  "group": "Megacap IA",
+  "vol_tier": "media",
+  "first": "2025-11-20",
+  "ret_period": 0.021122883220081823,
+  "vol_annual": 0.34032725960977384,
+  "max_dd": -0.2797015489874123,
+  "last_close": 484.52
+ },
+ {
+  "symbol": "NVDA",
+  "name": "Nvidia",
+  "group": "Megacap IA",
+  "vol_tier": "alta",
+  "first": "2025-11-20",
+  "ret_period": -0.3034170189211648,
+  "vol_annual": 0.41153584908620156,
+  "max_dd": -0.47529677311486374,
+  "last_close": 125.53
+ },
+ {
+  "symbol": "TSLA",
+  "name": "Tesla",
+  "group": "Alta beta",
+  "vol_tier": "alta",
+  "first": "2025-11-20",
+  "ret_period": -0.1250158135769046,
+  "vol_annual": 0.4612756647934053,
+  "max_dd": -0.3910345390707929,
+  "last_close": 345.82
+ },
+ {
+  "symbol": "PLTR",
+  "name": "Palantir",
+  "group": "Alta beta IA",
+  "vol_tier": "alta",
+  "first": "2025-11-20",
+  "ret_period": -0.07868631416738892,
+  "vol_annual": 0.6022792049981625,
+  "max_dd": -0.4475459648761394,
+  "last_close": 143.49
+ },
+ {
+  "symbol": "CRWV",
+  "name": "CoreWeave",
+  "group": "Infraestructura IA",
+  "vol_tier": "muy alta",
+  "first": "2025-11-20",
+  "ret_period": -0.4291287386215864,
+  "vol_annual": 1.0101744432255417,
+  "max_dd": -0.7136541527757646,
+  "last_close": 39.51
+ },
+ {
+  "symbol": "SPCX",
+  "name": "SpaceX",
+  "group": "IPO 2026",
+  "vol_tier": "muy alta",
+  "first": "2026-06-12",
+  "ret_period": -0.2060267163715439,
+  "vol_annual": 0.8080664103225781,
+  "max_dd": -0.4878187236860778,
+  "last_close": 127.79
+ },
+ {
+  "symbol": "COIN",
+  "name": "Coinbase",
+  "group": "Acci\u00f3n cripto",
+  "vol_tier": "muy alta",
+  "first": "2025-11-20",
+  "ret_period": -0.5718424588511924,
+  "vol_annual": 0.7207237221963122,
+  "max_dd": -0.632355062013268,
+  "last_close": 101.97
+ },
+ {
+  "symbol": "BTC-USD",
+  "name": "Bitcoin",
+  "group": "Cripto",
+  "vol_tier": "alta",
+  "first": "2025-11-20",
+  "ret_period": -0.32127795881193866,
+  "vol_annual": 0.437028373615944,
+  "max_dd": -0.395860262316886,
+  "last_close": 58798.98
+ },
+ {
+  "symbol": "ETH-USD",
+  "name": "Ethereum",
+  "group": "Cripto",
+  "vol_tier": "muy alta",
+  "first": "2025-11-20",
+  "ret_period": -0.4281217211408127,
+  "vol_annual": 0.6036405937474164,
+  "max_dd": -0.5335481230684134,
+  "last_close": 1619.4321
+ },
+ {
+  "symbol": "SOL-USD",
+  "name": "Solana",
+  "group": "Cripto",
+  "vol_tier": "muy alta",
+  "first": "2025-11-20",
+  "ret_period": -0.48510352415401303,
+  "vol_annual": 0.6186806208520155,
+  "max_dd": -0.569609888192934,
+  "last_close": 68.74751
+ },
+ {
+  "symbol": "GLD",
+  "name": "Oro (ETF)",
+  "group": "Refugio",
+  "vol_tier": "baja",
+  "first": "2025-11-20",
+  "ret_period": -0.13866880085367483,
+  "vol_annual": 0.29325983682702833,
+  "max_dd": -0.3489211534583585,
+  "last_close": 322.87
+ },
+ {
+  "symbol": "TLT",
+  "name": "Bonos EE. UU. 20+ a\u00f1os (ETF)",
+  "group": "Tipos de inter\u00e9s",
+  "vol_tier": "baja",
+  "first": "2025-11-20",
+  "ret_period": -0.04428166320664162,
+  "vol_annual": 0.09806871787831357,
+  "max_dd": -0.12468982715130694,
+  "last_close": 81.45
+ },
+ {
+  "symbol": "USO",
+  "name": "Petr\u00f3leo (ETF)",
+  "group": "Materias primas",
+  "vol_tier": "media",
+  "first": "2025-11-20",
+  "ret_period": 0.9904490377761936,
+  "vol_annual": 0.510304432984099,
+  "max_dd": -0.3248561715481172,
+  "last_close": 139.63
+ },
+ {
+  "symbol": "SAN.MC",
+  "name": "Banco Santander",
+  "group": "Europa (Madrid)",
+  "vol_tier": "media",
+  "first": "2025-11-20",
+  "ret_period": 0.1848070538268638,
+  "vol_annual": 0.31751339683772334,
+  "max_dd": -0.20936910889928595,
+  "last_close": 10.32
+ }
+]
