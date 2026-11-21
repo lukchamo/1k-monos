@@ -12,3 +12,4 @@ seed/
 .DS_Store
 __pycache__/
 cloudflare-env.d.ts
+*.tsbuildinfo

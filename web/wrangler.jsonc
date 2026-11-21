@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "1k-monos-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+  // estáticos servidos por Cloudflare sin invocar el Worker (ver public/_headers para su caché)
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+
+  // observabilidad: logs y trazas de cada invocación en el panel de Cloudflare
+  "observability": { "enabled": true, "head_sampling_rate": 1, "logs": { "enabled": true, "invocation_logs": true }, "traces": { "enabled": true } },
+  "upload_source_maps": true,
+
+  "services": [
+    // auto-referencia que usa la cola de revalidación del ISR
+    { "binding": "WORKER_SELF_REFERENCE", "service": "1k-monos-web" },
+    // la API del laboratorio, Worker a Worker: la web nunca sale a internet para leer datos
+    { "binding": "LAB_API", "service": "laboratorio-inversionistas" }
+  ],
+
+  // caché incremental del ISR
+  "r2_buckets": [{ "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "1k-monos-web-cache" }],
+
+  // cola de revalidación: deduplica regeneraciones
+  "durable_objects": { "bindings": [{ "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }],
+
+  // Cloudflare Artifacts (experimental, plan Workers Paid): repositorio Git con las micro-interfaces.
+  // Sin este binding la página /experimentos usa las especificaciones del repositorio.
+  // "artifacts": [{ "binding": "ARTIFACTS", "namespace": "lab-1k-monos" }],
+
+  "vars": { "NEXT_PUBLIC_SITE_URL": "https://1k-monos-web.lc-45e.workers.dev" }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "pulso-noticias",
+  "title": "Pulso de noticias",
+  "author": "agente-lector",
+  "description": "Las últimas noticias que etiquetó el modelo, con su tipo y dirección.",
+  "blocks": [
+    { "type": "stat", "label": "Noticias leídas", "source": "status.news.total", "format": "int" },
+    { "type": "stat", "label": "Último cierre", "source": "status.market_day.date" },
+    { "type": "table", "source": "news", "limit": 5, "columns": [
+      { "label": "Titular", "field": "title" },
+      { "label": "Tipo", "field": "event_type" },
+      { "label": "Dirección", "field": "signal.direction" }
+    ] }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "podio",
+  "title": "El podio de hoy",
+  "author": "agente-ranking",
+  "description": "Los tres primeros del ranking y cuánto les falta para superar el listón de la suerte.",
+  "blocks": [
+    { "type": "stat", "label": "Primero", "source": "ranking.rows.0.name" },
+    { "type": "stat", "label": "Su resultado", "source": "ranking.rows.0.total_return", "format": "pct" },
+    { "type": "stat", "label": "Listón de la suerte", "source": "ranking.monkeys.best_of_n_p95", "format": "pct" },
+    { "type": "bars", "title": "Los cinco primeros", "source": "ranking.rows", "label": "name", "value": "total_return", "format": "pct", "limit": 5 }
+  ]
+}

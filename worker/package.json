@@ -12,9 +12,9 @@
     "db:migrate:remote": "wrangler d1 migrations apply lab-inversionistas --remote",
     "cf-typegen": "wrangler types",
     "db:seed:local": "node scripts/seed.mjs && wrangler d1 execute lab-inversionistas --local -c wrangler.local.json --file seed/prices.sql",
-    "dev:local": "wrangler dev -c wrangler.local.json --test-scheduled --var MCP_TOKEN:dev-token"
+    "dev:local": "wrangler dev -c wrangler.local.json --test-scheduled --var MCP_TOKEN:dev-token-local-1234567890"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261121.1",
     "@types/node": "^26.6.6",

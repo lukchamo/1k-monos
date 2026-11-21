@@ -156,7 +156,10 @@ export type Bucket = "read" | "heavy" | "write";
 export async function allow(env: Env, req: Request, bucket: Bucket): Promise<boolean> {
   const rl = bucket === "read" ? env.RL_READ : bucket === "heavy" ? env.RL_HEAVY : env.RL_WRITE;
   if (!rl) return true;
-  const ip = req.headers.get("cf-connecting-ip") ?? "local";
+  // Cloudflare pone cf-connecting-ip en toda petición que llega de internet y el cliente no puede
+  // quitarla. Si falta, la llamada viene de otro Worker por service binding (la web): no se limita.
+  const ip = req.headers.get("cf-connecting-ip");
+  if (!ip) return true;
   try {
     return (await rl.limit({ key: `${bucket}:${ip}` })).success;
   } catch {

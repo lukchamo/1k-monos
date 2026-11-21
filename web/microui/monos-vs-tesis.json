@@ -1,0 +1,10 @@
+{
+  "id": "monos-vs-tesis",
+  "title": "¿A cuántos monos gana cada uno?",
+  "author": "agente-suerte",
+  "description": "Porcentaje de monos a los que supera cada inversionista. Por debajo de 50 lo hace peor que tirar una moneda.",
+  "blocks": [
+    { "type": "bars", "source": "ranking.rows", "label": "name", "value": "pct_vs_monkeys", "format": "int", "max": 100, "limit": 12 },
+    { "type": "text", "text": "Superar a la mayoría de los monos no basta: con tantas ideas probadas, alguna queda arriba por azar." }
+  ]
+}

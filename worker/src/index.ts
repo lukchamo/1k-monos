@@ -70,6 +70,9 @@ function investorOf(raw: string | null): string {
   return s;
 }
 
+const lineup = (env: Env) =>
+  Promise.all(LINEUP.map(async (s) => ({ id: s.id, name: s.name, family: s.family, version: s.version, rule: s.rule, config_hash: await configHash(s, env.TAXONOMY_VERSION) })));
+
 async function route(req: Request, env: Env): Promise<Response> {
   const url = new URL(req.url);
   const p = url.pathname;
@@ -91,17 +94,29 @@ async function route(req: Request, env: Env): Promise<Response> {
 
   // ── lectura pública ────────────────────────────────────────────────────────
   if (GET) {
-    const heavy = p === "/v1/curves" || p === "/v1/pressure" || p === "/v1/decisions";
+    const heavy = p === "/v1/lab" || p === "/v1/curves" || p === "/v1/pressure" || p === "/v1/decisions";
     if (!(await allow(env, req, heavy ? "heavy" : "read"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
 
     if (p === "/v1/status") return json({ ...(await labStatus(env.DB)), engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString(), aviso: DISCLAIMER }, 200, "short");
 
-    if (p === "/v1/investors") {
-      const rows = await Promise.all(
-        LINEUP.map(async (s) => ({ id: s.id, name: s.name, family: s.family, version: s.version, rule: s.rule, config_hash: await configHash(s, env.TAXONOMY_VERSION) })),
+    // todo lo que pinta la web en una sola llamada: un viaje a D1 por render en vez de siete
+    if (p === "/v1/lab") {
+      const [status, rank, curve, news, positions, investors] = await Promise.all([
+        labStatus(env.DB),
+        ranking(env.DB),
+        curves(env.DB),
+        latestNews(env.DB, 30),
+        paperPositions(env.DB),
+        lineup(env),
+      ]);
+      return json(
+        { status: { ...status, engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, now: new Date().toISOString() }, ranking: rank, curves: curve, news, positions, investors, universe: { segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, aviso: DISCLAIMER },
+        200,
+        "short",
       );
-      return json(rows, 200, "long");
     }
+
+    if (p === "/v1/investors") return json(await lineup(env), 200, "long");
 
     if (p === "/v1/universe") return json({ segments: SEGMENTS, economies: ECONOMIES, indicators: INDICATORS }, 200, "long");
 
