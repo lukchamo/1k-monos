@@ -6,6 +6,10 @@ Treinta inversionistas virtuales, cada uno con una regla fija y pública, operan
 
 Un proyecto de código abierto de **CooWeb / LuchoIA**, bajo licencia [MIT](LICENSE).
 
+**En vivo:** [1k-monos-web.lc-45e.workers.dev](https://1k-monos-web.lc-45e.workers.dev) · **API:** [laboratorio-inversionistas.lc-45e.workers.dev](https://laboratorio-inversionistas.lc-45e.workers.dev/v1/lab)
+
+![Portada de 1K Monos](docs/img/portada.png)
+
 ## Qué dicen los datos hoy (20-nov-2025 → 20-nov-2026)
 
 - El mejor fue **Elástico 10 z1.5**: +6,2 %, mejor que el 94 % de los monos. Comprar y mantener: −8,8 %.

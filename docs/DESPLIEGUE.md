@@ -1,5 +1,27 @@
 # Despliegue en Cloudflare
 
+## Lo que ya está desplegado (cuenta CooWeb, 21-nov-2026)
+
+| Pieza | Dónde |
+| --- | --- |
+| Web | https://1k-monos-web.lc-45e.workers.dev |
+| API y MCP | https://laboratorio-inversionistas.lc-45e.workers.dev |
+| Base de datos D1 | `lab-inversionistas` (8.483 precios, 330 sesiones, 9 noticias, una corrida y las decisiones del 20-nov) |
+| Buckets R2 | `lab-inversionistas-raw`, `1k-monos-web-cache` |
+| AI Gateway | `lab-inversionistas` |
+| Artifacts | namespace `lab-1k-monos`, repositorio `microui` con tres vistas |
+| Despliegue continuo | Workers Builds conectado a `lukchamo/1k-monos`: cada push a `ccr-c7c96330-eqn0wu` compila y publica los dos Workers |
+| Observabilidad | Logs, logs de invocación y trazas activos en los dos Workers |
+
+Pendiente de tu parte:
+
+- **Rotar `MCP_TOKEN`.** Se generó durante el despliegue y quedó escrito en la conversación de trabajo. `npx wrangler secret put MCP_TOKEN` en `worker/`.
+- **`FIRECRAWL_API_KEY` y `TWELVE_DATA_API_KEY`.** Sin ellas el laboratorio no escucha noticias ni precios nuevos: enseña el experimento hasta el 20-nov-2026. La ingesta está en pausa, no rota.
+- **Rama de producción.** Cuando exista `main`, cambia la rama de los dos disparadores en Workers → Settings → Builds.
+- **Dominio** (sección 5).
+
+El resto de este documento explica cómo repetirlo desde cero.
+
 Dos Workers en la misma cuenta: `laboratorio-inversionistas` (la API) y `1k-monos-web` (la web). La web habla con la API por service binding, así que **la API se despliega primero**.
 
 ## 1. Recursos (una sola vez)
@@ -71,14 +93,16 @@ Ya viene activada en los dos `wrangler.jsonc` (logs, logs de invocación y traza
 
 ## 7. Cloudflare Artifacts (experimental)
 
-Las micro-interfaces de `/experimentos` pueden vivir en un repositorio Git de Artifacts (plan Workers Paid, beta abierta).
+Las micro-interfaces de `/experimentos` viven en un repositorio Git de Artifacts (plan Workers Paid, beta abierta): namespace `lab-1k-monos`, repositorio `microui`, rama `main`. La web lo lee con el binding `ARTIFACTS` de `web/wrangler.jsonc`; si falla, usa las vistas de `web/microui/`.
+
+Para publicar una vista nueva, pide un token de escritura del repositorio (panel de Artifacts, o `POST /accounts/{id}/artifacts/namespaces/lab-1k-monos/tokens`) y usa Git normal:
 
 ```bash
-npx wrangler artifacts namespaces create lab-1k-monos       # o desde el panel
-# crea el repositorio "microui" y sube el contenido de web/microui/ a la rama main
+git clone https://x:<token>@<account_id>.artifacts.cloudflare.net/git/lab-1k-monos/microui.git
+# añade mi-vista.json, inclúyela en index.json, commit y push
 ```
 
-Después descomenta el bloque `"artifacts"` de `web/wrangler.jsonc` y vuelve a desplegar. Sin el binding, la página usa las vistas de `web/microui/`. Los nombres exactos de los comandos de Artifacts pueden cambiar durante la beta: comprueba `npx wrangler artifacts --help`.
+La página se actualiza sola en su siguiente regeneración (5 minutos como mucho). Artifacts se factura por uso.
 
 ## Cómo está montada la caché
 

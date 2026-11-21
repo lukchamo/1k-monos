@@ -26,9 +26,9 @@
   "durable_objects": { "bindings": [{ "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }],
 
-  // Cloudflare Artifacts (experimental, plan Workers Paid): repositorio Git con las micro-interfaces.
-  // Sin este binding la página /experimentos usa las especificaciones del repositorio.
-  // "artifacts": [{ "binding": "ARTIFACTS", "namespace": "lab-1k-monos" }],
+  // Cloudflare Artifacts (experimental, plan Workers Paid): repositorio Git "microui" con las
+  // micro-interfaces. Si el binding falla, /experimentos usa las especificaciones de web/microui/.
+  "artifacts": [{ "binding": "ARTIFACTS", "namespace": "lab-1k-monos" }],
 
   "vars": { "NEXT_PUBLIC_SITE_URL": "https://1k-monos-web.lc-45e.workers.dev" }
 }

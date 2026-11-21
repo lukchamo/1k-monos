@@ -4,7 +4,7 @@ Qué protege al laboratorio, cómo se probó y qué queda pendiente. Última rev
 
 ## Resultado del pentest
 
-`scripts/pentest.sh` lanza 54 pruebas contra la API y la web. En la última ejecución (local, con el runtime real de Workers): **54 correctas, 0 fallos**.
+`scripts/pentest.sh` lanza 55 pruebas contra la API y la web. Se ejecutó en local (runtime real de Workers) y **contra producción** (`*.lc-45e.workers.dev`): todas correctas tras corregir el hallazgo de abajo.
 
 | Bloque | Qué se intentó | Resultado |
 | --- | --- | --- |
@@ -14,7 +14,15 @@ Qué protege al laboratorio, cómo se probó y qué queda pendiente. Última rev
 | Fuga de información | `outcome` de las noticias, trazas y SQL en errores, `.env`, `.git/config`, `wrangler.jsonc`, `worker.js` | Nada expuesto |
 | Cabeceras | CSP, HSTS, nosniff, anti-iframe, política de referrer, sin `x-powered-by` | Presentes en web y API |
 | XSS y redirecciones | HTML en la ruta y en la consulta; `//evil.com` | No se refleja ni redirige |
-| Ritmo | 45 peticiones seguidas a una ruta pesada desde una IP | 429 a partir de la 31 |
+| Ritmo y carga | Ráfagas de 600 a 1.000 peticiones en paralelo | 429 cuando una IP se pasa; ningún error de servidor |
+
+### Hallazgo en producción (corregido)
+
+Con 1.000 peticiones simultáneas a `/v1/curves`, **455 devolvieron error 500**: cada petición consultaba la base de datos y D1 se saturaba. El límite de ritmo no lo evitaba porque el limitador de Cloudflare es aproximado: cuenta por punto de presencia y con retraso, así que una ráfaga en paralelo pasa antes de que salte.
+
+Corrección: las lecturas públicas se guardan en memoria 30 a 120 segundos por isolate, de modo que cien visitas simultáneas comparten una sola consulta. Si aun así la base de datos se satura, la API responde 503 con `retry-after` en vez de 500. Repetida la prueba: 998 respuestas correctas, 2 limitadas, 0 errores.
+
+Lección: el límite de ritmo de Workers frena el abuso sostenido, no una ráfaga corta. Para eso está la memoria de respuestas, y con dominio propio se suma la caché del borde. Si el tráfico crece, añadir una regla de rate limiting del WAF sobre el dominio.
 
 Además: `npm audit` sin vulnerabilidades en la API. En la web quedan 3 avisos moderados (`glob`, `minimatch`) dentro de la herramienta de build de OpenNext; no llegan al código desplegado. Búsqueda de secretos en el repositorio: ninguno.
 
@@ -24,12 +32,12 @@ Esto es un pentest de humo automatizado, no una auditoría. Antes de manejar alg
 
 - **Lista blanca en todas las entradas.** Símbolos, inversionistas y segmentos deben existir en el universo del motor. Fechas reales y en rango. Enteros acotados.
 - **SQL siempre con parámetros.** Ninguna consulta concatena texto del usuario.
-- **Límite de ritmo por IP** en tres cubos: lectura (120/min), rutas pesadas y MCP (30/min), escritura (10/min). Las llamadas internas entre Workers no cuentan.
+- **Límite de ritmo por IP** en tres cubos: lectura (120/min), rutas pesadas y MCP (30/min), escritura (10/min). Las llamadas internas entre Workers no cuentan. Es un límite aproximado (ver el hallazgo de arriba).
 - **Token en tiempo constante** para las rutas que escriben. Un secreto ausente o de menos de 16 caracteres nunca autoriza.
 - **Tope de cuerpo de 16 KB** medido al leer, sin fiarse de `content-length`.
 - **Backtests acotados:** 5 años y 5.000 monos como máximo.
 - **Errores sin detalle.** El cliente recibe «error interno»; la traza va a los logs de Cloudflare.
-- **Caché en el borde** en las lecturas: una ráfaga de visitas no se convierte en una ráfaga de consultas.
+- **Memoria de respuestas** en las lecturas públicas (30 a 120 s por isolate) y cabeceras de caché para el borde: una ráfaga de visitas no se convierte en una ráfaga de consultas.
 
 ## Guardarraíles de la IA (`worker/src/ingest/news.ts`)
 
