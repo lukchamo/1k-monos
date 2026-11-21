@@ -62,6 +62,8 @@ Pendiente: activar Guardrails de AI Gateway (clasificador de contenido en entrad
 - **Rutas dinámicas cerradas:** solo existen los inversionistas del elenco (`dynamicParams = false`).
 - **Aviso en todas las páginas** y página `/aviso`.
 
+La única excepción a «solo este origen» es la analítica de visitas de Cloudflare (`static.cloudflareinsights.com`), que no usa cookies.
+
 Compromiso conocido: la CSP permite scripts en línea (`'unsafe-inline'`). Un nonce por petición lo evitaría, pero obliga a generar cada página en cada visita y desactiva la caché. Con una web sin datos de usuario, elegimos la caché.
 
 ## Guardarraíles de las micro-interfaces (`web/lib/microui.ts`)
