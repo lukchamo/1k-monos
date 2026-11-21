@@ -10,7 +10,7 @@
   // D1: libro mayor (precios, noticias, señales, métricas). Crear con:
   //   npx wrangler d1 create lab-inversionistas   → pegar aquí el database_id
   "d1_databases": [
-    { "binding": "DB", "database_name": "lab-inversionistas", "database_id": "REEMPLAZAR-CON-EL-ID", "migrations_dir": "migrations" }
+    { "binding": "DB", "database_name": "lab-inversionistas", "database_id": "7603d7bb-da98-4263-88e2-eb99ad61e5b7", "migrations_dir": "migrations" }
   ],
 
   // R2: texto crudo de cada noticia y la respuesta del modelo
