@@ -4,12 +4,13 @@
 
 | Pieza | Dónde |
 | --- | --- |
-| Web | https://1k-monos-web.lc-45e.workers.dev |
-| API y MCP | https://laboratorio-inversionistas.lc-45e.workers.dev |
+| Web | https://1kmonos.com |
+| API y MCP | https://api.1kmonos.com |
 | Base de datos D1 | `lab-inversionistas` (8.483 precios, 330 sesiones, 9 noticias, una corrida y las decisiones del 20-nov) |
 | Buckets R2 | `lab-inversionistas-raw`, `1k-monos-web-cache` |
 | AI Gateway | `lab-inversionistas` |
 | Artifacts | namespace `lab-1k-monos`, repositorio `microui` con tres vistas |
+| Dominio | `1kmonos.com` en Cloudflare Registrar (vence el 21-nov-2027, sin renovación automática) y dado de alta en Email Service |
 | Despliegue continuo | Workers Builds conectado a `lukchamo/1k-monos`: cada push a `ccr-c7c96330-eqn0wu` compila y publica los dos Workers |
 | Observabilidad | Logs, logs de invocación y trazas activos en los dos Workers |
 
@@ -18,7 +19,6 @@ Pendiente de tu parte:
 - **Rotar `MCP_TOKEN`.** Se generó durante el despliegue y quedó escrito en la conversación de trabajo. `npx wrangler secret put MCP_TOKEN` en `worker/`.
 - **`FIRECRAWL_API_KEY` y `TWELVE_DATA_API_KEY`.** Sin ellas el laboratorio no escucha noticias ni precios nuevos: enseña el experimento hasta el 20-nov-2026. La ingesta está en pausa, no rota.
 - **Rama de producción.** Cuando exista `main`, cambia la rama de los dos disparadores en Workers → Settings → Builds.
-- **Dominio** (sección 5).
 
 El resto de este documento explica cómo repetirlo desde cero.
 
@@ -93,7 +93,7 @@ Ya viene activada en los dos `wrangler.jsonc` (logs, logs de invocación y traza
 
 ## 6 bis. Correo diario al autor
 
-Tras cada cierre con decisiones, el Worker envía un resumen a la dirección del secreto `DIGEST_TO` usando Cloudflare Email Service (binding `EMAIL`). El remitente es la variable `DIGEST_FROM` y debe pertenecer a un dominio dado de alta en Email Service; hoy es provisional (`laboratorio@unifyflow.app`) hasta tener dominio propio.
+Tras cada cierre con decisiones, el Worker envía un resumen a la dirección del secreto `DIGEST_TO` usando Cloudflare Email Service (binding `EMAIL`). El remitente es la variable `DIGEST_FROM` y debe pertenecer a un dominio dado de alta en Email Service; es `laboratorio@1kmonos.com`.
 
 ```bash
 npx wrangler secret put DIGEST_TO          # tu correo; no se guarda en el repositorio

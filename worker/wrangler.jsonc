@@ -2,6 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "laboratorio-inversionistas",
   "main": "src/index.ts",
+  "routes": [{ "pattern": "api.1kmonos.com", "custom_domain": true }],
+  "workers_dev": true,
   "compatibility_date": "2026-11-01",
   // observabilidad: logs y trazas de cada invocación, consultables en el panel de Cloudflare
   "observability": { "enabled": true, "head_sampling_rate": 1, "logs": { "enabled": true, "invocation_logs": true }, "traces": { "enabled": true } },
@@ -37,9 +39,8 @@
   "send_email": [{ "name": "EMAIL" }],
 
   "vars": {
-    // remitente provisional: un dominio ya dado de alta en la cuenta. Cambiar al dominio propio cuando exista
-    "DIGEST_FROM": "laboratorio@unifyflow.app",
-    "SITE_URL": "https://1k-monos-web.lc-45e.workers.dev",
+    "DIGEST_FROM": "laboratorio@1kmonos.com",
+    "SITE_URL": "https://1kmonos.com",
     // clave pública de los avisos del navegador (la privada es el secreto VAPID_PRIVATE_KEY)
     "VAPID_PUBLIC_KEY": "BCf4AET_joE7_ft_ZrmiIwoi299FHDsMsNiSyLfCtA-IqReos5qN3wqYbS7jnENvbE0eKr6iIC6C-zClar5N8d4",
     "TAXONOMY_VERSION": "tax-1.0",

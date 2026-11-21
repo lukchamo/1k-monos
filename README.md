@@ -6,7 +6,7 @@ Treinta inversionistas virtuales, cada uno con una regla fija y pública, operan
 
 Un proyecto de código abierto de **CooWeb / LuchoIA**, bajo licencia [MIT](LICENSE).
 
-**En vivo:** [1k-monos-web.lc-45e.workers.dev](https://1k-monos-web.lc-45e.workers.dev) · **API:** [laboratorio-inversionistas.lc-45e.workers.dev](https://laboratorio-inversionistas.lc-45e.workers.dev/v1/lab)
+**En vivo:** [1kmonos.com](https://1kmonos.com) · **API:** [api.1kmonos.com](https://api.1kmonos.com/v1/lab)
 
 ![Portada de 1K Monos](docs/img/portada.png)
 
@@ -74,7 +74,7 @@ Sin API, la web sirve una foto empaquetada del experimento (`web/data/snapshot.j
 | `GET /v1/calls` | Llamadas de consenso y su verificación al cierre siguiente |
 | `POST /mcp` | Servidor MCP (JSON-RPC) con cinco herramientas. Ver [docs/MCP.md](docs/MCP.md) |
 
-Las rutas que escriben (`POST /v1/backtest`, `POST /v1/decide`, `POST /v1/digest`) exigen token. Cómo conectar un asistente al MCP: [/mcp](https://1k-monos-web.lc-45e.workers.dev/mcp).
+Las rutas que escriben (`POST /v1/backtest`, `POST /v1/decide`, `POST /v1/digest`) exigen token. Cómo conectar un asistente al MCP: [/mcp](https://1kmonos.com/mcp).
 
 ## Contribuir
 

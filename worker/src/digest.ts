@@ -60,7 +60,7 @@ export async function trackRecord(db: D1Database, limit = 60) {
 export async function sendDigest(env: Env, date: string, send = true): Promise<{ digest: Digest; sent: boolean; reason?: string; push?: unknown }> {
   const digest = await buildDigest(env.DB, date);
   if (!send) return { digest, sent: false, reason: "solo vista previa" };
-  const site = env.SITE_URL ?? "https://1k-monos-web.lc-45e.workers.dev";
+  const site = env.SITE_URL ?? "https://1kmonos.com";
   // aviso del navegador a quien se suscribió en la web (solo si hay llamadas nuevas)
   const notice = noticeFor(digest, site);
   const push = notice ? await notifyAll(env, notice).catch((e) => ({ error: String(e) })) : { skipped: "sin llamadas nuevas" };

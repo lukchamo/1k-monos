@@ -83,7 +83,7 @@
   "PROMPT_VERSION": "extract-1.0",
   "AI_GATEWAY_ID": "lab-inversionistas",
   "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-  "DIGEST_FROM": "laboratorio@unifyflow.app",
+  "DIGEST_FROM": "laboratorio@1kmonos.com",
   "SITE_URL": "http://localhost:8788",
   "VAPID_PUBLIC_KEY": "BCf4AET_joE7_ft_ZrmiIwoi299FHDsMsNiSyLfCtA-IqReos5qN3wqYbS7jnENvbE0eKr6iIC6C-zClar5N8d4"
  },

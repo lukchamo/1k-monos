@@ -30,5 +30,12 @@
   // micro-interfaces. Si el binding falla, /experimentos usa las especificaciones de web/microui/.
   "artifacts": [{ "binding": "ARTIFACTS", "namespace": "lab-1k-monos" }],
 
-  "vars": { "NEXT_PUBLIC_SITE_URL": "https://1k-monos-web.lc-45e.workers.dev" }
+  // dominio propio; www redirige al principal desde el propio Worker (redirects de next.config.ts)
+  "routes": [
+    { "pattern": "1kmonos.com", "custom_domain": true },
+    { "pattern": "www.1kmonos.com", "custom_domain": true }
+  ],
+  "workers_dev": true,
+
+  "vars": { "NEXT_PUBLIC_SITE_URL": "https://1kmonos.com", "NEXT_PUBLIC_MCP_URL": "https://api.1kmonos.com/mcp" }
 }

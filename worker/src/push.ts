@@ -30,7 +30,7 @@ export async function unsubscribe(db: D1Database, raw: unknown): Promise<{ ok: t
 /** envía un aviso a todos los suscritos. Las suscripciones caducadas (404/410) se borran. */
 export async function notifyAll(env: Env, notice: Notice): Promise<{ sent: number; removed: number; failed: number; skipped?: string }> {
   if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return { sent: 0, removed: 0, failed: 0, skipped: "avisos sin configurar (VAPID)" };
-  const vapid = { subject: env.SITE_URL ?? "https://1k-monos-web.lc-45e.workers.dev", publicKey: env.VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY };
+  const vapid = { subject: env.SITE_URL ?? "https://1kmonos.com", publicKey: env.VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY };
   const { results } = await env.DB.prepare("SELECT endpoint, p256dh, auth FROM push_subs WHERE fails < 5 LIMIT ?1").bind(MAX_SUBS).all<{ endpoint: string; p256dh: string; auth: string }>();
   let sent = 0;
   let removed = 0;

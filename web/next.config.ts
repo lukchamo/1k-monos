@@ -51,6 +51,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // www → dominio principal, para que solo exista una dirección de cada página
+  async redirects() {
+    return [{ source: "/:path*", has: [{ type: "host", value: "www.1kmonos.com" }], destination: "https://1kmonos.com/:path*", permanent: true }];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

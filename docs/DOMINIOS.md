@@ -1,5 +1,7 @@
 # Dominios
 
+> **Actualización, 21-nov-2026:** se compró `1kmonos.com` en Cloudflare Registrar. La web vive en `1kmonos.com` y la API en `api.1kmonos.com`. Lo que sigue es la consulta original.
+
 Consulta de disponibilidad hecha el 21-nov-2026 contra el registro (vía la API de dominios de Vercel). **No se ha comprado nada.** La disponibilidad cambia: confirma en el registrador antes de pagar. No pudimos obtener precios en esta consulta.
 
 ## Recomendación

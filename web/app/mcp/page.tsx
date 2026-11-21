@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Cómo conectar Claude, Cursor u otro asistente al laboratorio con el servidor MCP público.",
 };
 
-const MCP_URL = process.env.NEXT_PUBLIC_MCP_URL ?? "https://laboratorio-inversionistas.lc-45e.workers.dev/mcp";
+const MCP_URL = process.env.NEXT_PUBLIC_MCP_URL ?? "https://api.1kmonos.com/mcp";
 
 const TOOLS = [
   ["ranking", "Ranking de inversionistas, global o por segmento, con su percentil frente a los monos.", "¿Quién va primero en cripto?"],
