@@ -80,7 +80,7 @@
  ],
  "vars": {
   "TAXONOMY_VERSION": "tax-1.0",
-  "PROMPT_VERSION": "extract-1.0",
+  "PROMPT_VERSION": "extract-1.1",
   "AI_GATEWAY_ID": "lab-inversionistas",
   "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
   "DIGEST_FROM": "laboratorio@1kmonos.com",

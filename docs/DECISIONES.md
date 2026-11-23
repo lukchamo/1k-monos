@@ -39,3 +39,11 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 - **Fuentes de precios.** La PoC usó Yahoo Finance vía Firecrawl, contrastado con Twelve Data. El Worker trae Twelve Data y CoinGecko con API REST; falta enchufar la segunda fuente de acciones antes de exigir la validación cruzada en todo el universo.
 - **Sesiones futuras.** El Worker añade los 5 días hábiles siguientes sin calendario de festivos de NYSE. Añadir festivos antes de producción.
 - **Extracción.** El prompt `extract-1.0` y el modelo están puestos, pero sin probar contra noticias reales: medir la tasa de JSON válidos al primer intento (meta ≥ 95 %) y el coste por noticia.
+
+## D-24 · MCP privado con Zero Trust, ingesta manual y prompt extract-1.1 (23-nov-2026)
+
+- **MCP privado.** `mcp.1kmonos.com` va detrás de Cloudflare Access con Managed OAuth y código de un solo uso: el autor usa todas las herramientas sin token. El Worker solo valida el JWT de Access (`src/access.ts`). La puerta pública sigue siendo de lectura.
+- **Ingesta manual (`POST /v1/ingest`, con token).** Sirve para cuando el cron no tiene claves de datos: recibe noticias ya buscadas o los cierres de un día con dos fuentes, y sigue el mismo camino que el cron (extracción versionada, validación, contraste de precios, decisiones y resumen). No abre un atajo: lo que no valida va a revisión y un día con discrepancia queda incompleto.
+- **Prompt `extract-1.1`.** El 1.0 pedía usar «la taxonomía que se te da» sin incluirla; con las primeras noticias reales el modelo no devolvió la forma esperada y las seis fueron a revisión. El 1.1 incluye las listas cerradas, los símbolos del laboratorio y la forma del JSON. Las entidades fuera del universo se descartan antes de validar.
+- **Cron de cierre.** `1-5` en Cloudflare es de domingo a jueves; pasa a `MON-FRI`.
+
