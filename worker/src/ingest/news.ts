@@ -111,6 +111,8 @@ export async function extract(env: Env, a: RawArticle, sessions: string[]): Prom
         ],
         response_format: { type: "json_object" },
         temperature: 0,
+        // el valor por defecto (256) corta el JSON a medias y deja de ser válido
+        max_tokens: 1500,
       } as any,
       { gateway: { id: env.AI_GATEWAY_ID } } as any,
     );
