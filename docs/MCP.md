@@ -6,6 +6,20 @@ Endpoint: `POST /mcp` del Worker. JSON-RPC 2.0 sobre HTTP, sin estado (`initiali
 
 Conectar desde Claude: añadir un conector MCP remoto con la URL `https://<worker>/mcp`.
 
+## Dos puertas
+
+| Dirección | Quién | Autenticación | Qué permite |
+|---|---|---|---|
+| `https://api.1kmonos.com/mcp` | cualquiera | ninguna (o `Authorization: Bearer <MCP_TOKEN>`) | lectura; `correr_backtest` solo con token |
+| `https://mcp.1kmonos.com/mcp` | el autor | OAuth de Cloudflare Access (Zero Trust) con código de un solo uso al correo | todo, sin token |
+
+La puerta privada es una aplicación *self-hosted* de Access con **Managed OAuth**: el cliente MCP descubre el
+servidor de autorización en `/.well-known/oauth-authorization-server`, se registra solo (DCR) y abre el
+navegador; Access pide el correo, envía un código de un solo uso y aplica la política (solo los correos
+permitidos). El Worker no implementa OAuth: valida el JWT que Access reenvía en `Cf-Access-Jwt-Assertion`
+(`worker/src/access.ts`: firma RS256, emisor, audiencia y caducidad) y, si no es válido, responde 403.
+Variables: `MCP_PRIVATE_HOST`, `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` en `worker/wrangler.jsonc`.
+
 ## `ranking`
 Ranking de la última corrida completa (o de `run_id`), global o por segmento.
 

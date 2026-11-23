@@ -19,6 +19,10 @@ export interface Env {
   DIGEST_FROM?: string; // remitente: debe ser de un dominio dado de alta en Email Service
   SITE_URL?: string;
   VAPID_PUBLIC_KEY?: string; // clave pública de los avisos del navegador (no es secreta)
+  // MCP privado detrás de Cloudflare Access (Zero Trust). Sin estas tres, el hostname privado no existe
+  MCP_PRIVATE_HOST?: string;
+  ACCESS_TEAM_DOMAIN?: string;
+  ACCESS_AUD?: string; // etiqueta AUD de la aplicación de Access (no es secreta)
   TAXONOMY_VERSION: string;
   PROMPT_VERSION: string;
   AI_GATEWAY_ID: string;

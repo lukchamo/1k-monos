@@ -2,7 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "laboratorio-inversionistas",
   "main": "src/index.ts",
-  "routes": [{ "pattern": "api.1kmonos.com", "custom_domain": true }],
+  "routes": [
+    { "pattern": "api.1kmonos.com", "custom_domain": true },
+    // MCP privado: protegido por Cloudflare Access (Zero Trust) con Managed OAuth y código de un solo uso
+    { "pattern": "mcp.1kmonos.com", "custom_domain": true }
+  ],
   "workers_dev": true,
   "compatibility_date": "2026-11-01",
   // observabilidad: logs y trazas de cada invocación, consultables en el panel de Cloudflare
@@ -43,6 +47,9 @@
     "SITE_URL": "https://1kmonos.com",
     // clave pública de los avisos del navegador (la privada es el secreto VAPID_PRIVATE_KEY)
     "VAPID_PUBLIC_KEY": "BCf4AET_joE7_ft_ZrmiIwoi299FHDsMsNiSyLfCtA-IqReos5qN3wqYbS7jnENvbE0eKr6iIC6C-zClar5N8d4",
+    "MCP_PRIVATE_HOST": "mcp.1kmonos.com",
+    "ACCESS_TEAM_DOMAIN": "calm-rain-cafa.cloudflareaccess.com",
+    "ACCESS_AUD": "a8fe5b2573707240dca44db57a885088ccf22ff6a9d2a9c2a717e43a4987efa0",
     "TAXONOMY_VERSION": "tax-1.0",
     "PROMPT_VERSION": "extract-1.0",
     "AI_GATEWAY_ID": "lab-inversionistas",
@@ -52,7 +59,7 @@
   "triggers": {
     "crons": [
       "*/15 * * * *", // noticias
-      "30 22 * * 1-5" // precios + decisiones, tras el cierre de EE. UU.
+      "30 22 * * MON-FRI" // precios + decisiones, tras el cierre de EE. UU.
     ]
   }
 

@@ -148,9 +148,10 @@ async function handle(env: Env, msg: any, authorized: boolean) {
   }
 }
 
-export async function mcp(req: Request, env: Env): Promise<Response> {
+/** `trusted`: la petición ya viene autenticada por Cloudflare Access (MCP privado); si no, vale el token */
+export async function mcp(req: Request, env: Env, trusted = false): Promise<Response> {
   if (req.method !== "POST") return fail(405, "MCP: usa POST con JSON-RPC 2.0", { allow: "POST" });
-  const authorized = await tokenOk(req, env.MCP_TOKEN);
+  const authorized = trusted || (await tokenOk(req, env.MCP_TOKEN));
   let body: any;
   try {
     body = await readJson(req, 32 * 1024);

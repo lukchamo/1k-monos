@@ -13,6 +13,7 @@ import { lector, pressure, pressureBreakdown } from "./news/scoring";
 import { ingestNews } from "./ingest/news";
 import { coinGecko, ingestPrices, twelveData } from "./ingest/prices";
 import { mcp } from "./mcp";
+import { verifyAccessJwt } from "./access";
 import { sendDigest, trackRecord } from "./digest";
 import { notifyAll, subscribe, unsubscribe } from "./push";
 import { renderPromo } from "./promo";
@@ -130,6 +131,15 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
 
   if (GET && (p === "/" || p === "/health"))
     return json({ ok: true, engine: ENGINE_VERSION, taxonomy: env.TAXONOMY_VERSION, investors: LINEUP.length, aviso: DISCLAIMER }, 200, "short");
+
+  // MCP privado: hostname detrás de Cloudflare Access (Zero Trust). Solo sirve el MCP y solo con
+  // el JWT de Access válido; si falta (Access mal configurado o saltado), se cierra.
+  if (env.MCP_PRIVATE_HOST && url.hostname === env.MCP_PRIVATE_HOST) {
+    const who = await verifyAccessJwt(req.headers.get("cf-access-jwt-assertion"), { teamDomain: env.ACCESS_TEAM_DOMAIN ?? "", aud: env.ACCESS_AUD ?? "" });
+    if (!who) return fail(403, "acceso restringido");
+    if (!(await allow(env, req, "heavy"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });
+    return mcp(req, env, true);
+  }
 
   if (p === "/mcp") {
     if (!(await allow(env, req, "heavy"))) return fail(429, "demasiadas peticiones", { "retry-after": "60" });

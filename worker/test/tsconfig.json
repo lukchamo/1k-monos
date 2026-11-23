@@ -4,5 +4,5 @@
     "types": ["node"],
     "lib": ["es2023", "dom"]
   },
-  "include": ["./**/*.ts", "../src/engine/**/*.ts", "../src/news/**/*.ts", "../src/guard.ts", "../src/digest-core.ts", "../src/push-core.ts", "../src/promo.ts"]
+  "include": ["./**/*.ts", "../src/engine/**/*.ts", "../src/news/**/*.ts", "../src/guard.ts", "../src/digest-core.ts", "../src/push-core.ts", "../src/promo.ts", "../src/access.ts"]
 }
