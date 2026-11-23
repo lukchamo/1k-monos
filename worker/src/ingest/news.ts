@@ -123,7 +123,11 @@ export async function extract(env: Env, a: RawArticle, sessions: string[]): Prom
 /** ciclo completo para una consulta: buscar, guardar crudo, extraer, validar, escribir */
 export async function ingestNews(env: Env, query: string, sessions: string[], now = new Date()): Promise<{ saved: number; review: number }> {
   const from = new Date(now.getTime() - 86_400_000);
-  const arts = await searchNews(env, query, from, now);
+  return ingestArticles(env, await searchNews(env, query, from, now), sessions, now);
+}
+
+/** artículos ya buscados (por el cron o por la ingesta manual): guardar crudo, extraer, validar, escribir */
+export async function ingestArticles(env: Env, arts: RawArticle[], sessions: string[], now = new Date()): Promise<{ saved: number; review: number }> {
   let saved = 0;
   let review = 0;
   for (const a of arts) {

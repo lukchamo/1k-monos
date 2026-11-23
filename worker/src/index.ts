@@ -8,10 +8,10 @@ import type { Env } from "./env";
 import { configHash, ENGINE_VERSION, LINEUP } from "./engine/registry";
 import { ECONOMIES, GROUPS, INDICATORS, SEGMENTS, UNIVERSE } from "./engine/universe";
 import { curves, decisionReason, labStatus, latestNews, newsFor, paperPositions, marketData, playgroundData, ranking } from "./data/store";
-import { allow, backtestParams, BadInput, DISCLAIMER, fail, json, preflight, readJson, tokenOk, v } from "./guard";
+import { allow, backtestParams, BadInput, cleanText, DISCLAIMER, fail, json, preflight, readJson, safeUrl, tokenOk, v } from "./guard";
 import { lector, pressure, pressureBreakdown } from "./news/scoring";
-import { ingestNews } from "./ingest/news";
-import { coinGecko, ingestPrices, twelveData } from "./ingest/prices";
+import { ingestArticles, ingestNews, type RawArticle } from "./ingest/news";
+import { coinGecko, ingestPrices, twelveData, type PriceSource } from "./ingest/prices";
 import { mcp } from "./mcp";
 import { verifyAccessJwt } from "./access";
 import { sendDigest, trackRecord } from "./digest";
@@ -26,7 +26,8 @@ export { InvestorDO } from "./do/investor";
 export { BacktestWorkflow } from "./workflows/backtest";
 
 const CRON_NEWS = "*/15 * * * *";
-const CRON_CLOSE = "30 22 * * 1-5"; // 22:30 UTC: después del cierre de NYSE en invierno (21:00) y en verano (20:00)
+// de lunes a viernes con nombres: en Cloudflare el día 1 es domingo, así que "1-5" corría en domingo y se saltaba el viernes
+const CRON_CLOSE = "30 22 * * MON-FRI"; // 22:30 UTC: después del cierre de NYSE en invierno (21:00) y en verano (20:00)
 
 /** consultas de noticias por mercado (una búsqueda por tema, no por activo) */
 const NEWS_QUERIES = [
@@ -52,6 +53,28 @@ async function sessions(env: Env): Promise<string[]> {
     }
   }
   return out;
+}
+
+/** cierre de un día: precios con dos fuentes; si el día queda completo, deciden todos y sale el resumen */
+async function closeDay(env: Env, date: string, primary: PriceSource, check: PriceSource) {
+  const day = await ingestPrices(env, date, [...UNIVERSE, INDICATORS.vix, INDICATORS.tnx], primary, check);
+  if (day.status !== "complete") {
+    console.warn("día incompleto, no se opera", day);
+    return { ...day, decided: 0 };
+  }
+  // cada inversionista decide en su propio Durable Object
+  const done = await Promise.all(
+    LINEUP.map((s) => env.INVESTOR.get(env.INVESTOR.idFromName(s.id)).decide(s.id, date).then(() => 1, (e) => (console.error(s.id, e), 0))),
+  );
+  // con todos decididos: llamadas de consenso, verificación de las anteriores y correo al autor
+  await sendDigest(env, date).catch((e) => console.error(JSON.stringify({ level: "error", message: "resumen diario", error: String(e) })));
+  MEMO.clear();
+  return { ...day, decided: done.reduce<number>((a, b) => a + b, 0) };
+}
+
+/** una fuente de precios hecha con los cierres que llegan en la petición (ingesta manual) */
+function givenSource(name: string, closes: Record<string, number | null>): PriceSource {
+  return { name, close: async (_env, symbol) => closes[symbol] ?? null };
 }
 
 /** el segmento existe o es el global: lista blanca sobre lo que el motor conoce */
@@ -245,10 +268,48 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
   if (p === "/v1/push/subscribe") return json(await subscribe(env.DB, await readJson(req, 4096)));
   if (p === "/v1/push/unsubscribe") return json(await unsubscribe(env.DB, await readJson(req, 4096)));
 
-  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test" && p !== "/v1/promo") return fail(404, "no encontrado");
+  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test" && p !== "/v1/promo" && p !== "/v1/ingest") return fail(404, "no encontrado");
   if (!(await tokenOk(req, env.MCP_TOKEN))) return fail(401, "no autorizado", { "www-authenticate": "Bearer" });
-  const b = (await readJson(req)) as Record<string, unknown>;
+  const b = (await readJson(req, p === "/v1/ingest" ? 128 * 1024 : undefined)) as Record<string, unknown>;
   if (!b || typeof b !== "object" || Array.isArray(b)) throw new BadInput("el cuerpo debe ser un objeto JSON");
+
+  // ingesta manual (cuando el cron no tiene claves de datos): noticias ya buscadas o cierres de un día.
+  // Pasa por el mismo camino que el cron: extracción versionada, validación, dos fuentes de precio.
+  if (p === "/v1/ingest") {
+    const out: Record<string, unknown> = {};
+    if (b.news !== undefined) {
+      if (!Array.isArray(b.news) || b.news.length > 8) throw new BadInput("news debe ser una lista de hasta 8 artículos");
+      const arts: RawArticle[] = b.news.map((n: any) => {
+        const url = safeUrl(n?.url);
+        if (!url) throw new BadInput("url de noticia inválida");
+        const when = String(n?.published_at ?? "");
+        const published_at = when.includes("T") ? v.instant(when, "published_at").toISOString() : v.date(when, "published_at");
+        const text = cleanText(n?.text, 8000);
+        if (text.length < 80) throw new BadInput("texto de noticia demasiado corto");
+        return { url, title: cleanText(n?.title, 300), text, published_at, source_name: new URL(url).hostname.replace(/^www\./, "") };
+      });
+      out.news = await ingestArticles(env, arts, await sessions(env));
+    }
+    if (b.prices !== undefined) {
+      const pr = b.prices as Record<string, unknown>;
+      const date = v.date(pr?.date);
+      if (date > new Date().toISOString().slice(0, 10)) throw new BadInput("no se ingesta un día futuro");
+      const read = (raw: unknown, name: string) => {
+        if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new BadInput(`${name} debe ser un objeto símbolo → cierre`);
+        const o: Record<string, number | null> = {};
+        for (const [k, x] of Object.entries(raw)) {
+          const sym = symbolOf(k as string);
+          if (typeof x !== "number" || !Number.isFinite(x) || x <= 0) throw new BadInput(`cierre inválido: ${sym}`);
+          o[sym] = x;
+        }
+        return o;
+      };
+      const src = (x: unknown, name: string) => (typeof x === "string" && /^[a-z0-9-]{2,24}$/.test(x) ? x : (() => { throw new BadInput(`${name} inválido`); })());
+      out.prices = await closeDay(env, date, givenSource(src(pr.source, "source"), read(pr.closes, "closes")), givenSource(src(pr.check_source, "check_source"), read(pr.check, "check")));
+    }
+    MEMO.clear();
+    return json(out);
+  }
 
   if (p === "/v1/backtest") {
     const params = backtestParams(b);
@@ -309,19 +370,9 @@ export default {
       for (const q of NEWS_QUERIES) ctx.waitUntil(ingestNews(env, q, s).catch((e) => console.error("noticias", q, e)));
       return;
     }
-    if (controller.cron === CRON_CLOSE) {
-      const date = new Date(controller.scheduledTime).toISOString().slice(0, 10);
-      const day = await ingestPrices(env, date, [...UNIVERSE, INDICATORS.vix, INDICATORS.tnx], twelveData, coinGecko);
-      if (day.status !== "complete") {
-        console.warn("día incompleto, no se opera", day);
-        return;
-      }
-      // cada inversionista decide en su propio Durable Object
-      await Promise.all(
-        LINEUP.map((s) => env.INVESTOR.get(env.INVESTOR.idFromName(s.id)).decide(s.id, date).catch((e) => console.error(s.id, e))),
-      );
-      // con todos decididos: llamadas de consenso, verificación de las anteriores y correo al autor
-      await sendDigest(env, date).catch((e) => console.error(JSON.stringify({ level: "error", message: "resumen diario", error: String(e) })));
+    // por si Cloudflare normaliza la expresión: basta con la hora del cierre
+    if (controller.cron === CRON_CLOSE || controller.cron.startsWith("30 22 ")) {
+      await closeDay(env, new Date(controller.scheduledTime).toISOString().slice(0, 10), twelveData, coinGecko);
     }
   },
 } satisfies ExportedHandler<Env>;
