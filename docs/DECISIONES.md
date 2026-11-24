@@ -47,3 +47,9 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 - **Prompt `extract-1.1`.** El 1.0 pedía usar «la taxonomía que se te da» sin incluirla; con las primeras noticias reales el modelo no devolvió la forma esperada y las seis fueron a revisión. El 1.1 incluye las listas cerradas, los símbolos del laboratorio y la forma del JSON. Las entidades fuera del universo se descartan antes de validar.
 - **Cron de cierre.** `1-5` en Cloudflare es de domingo a jueves; pasa a `MON-FRI`.
 
+## D-25 · Neverless en los correos y seguimiento entre cierres (24-nov-2026)
+
+- **El correo dice dónde está cada activo en Neverless** (`src/brokers.ts`, foto del catálogo público). No cambia qué llamadas salen: las llamadas siguen siendo las de consenso sobre todo el universo, porque es lo que se verifica. Se añade un tablero con el reparto de votos de los activos que sí están en el bróker, descrito («mayoría en corto», «empate»), no convertido en señal.
+- **Tres correos al día, no cuatro señales.** El laboratorio decide una vez, al cierre. Los dos correos nuevos (09:30 y 15:00 UTC, de lunes a viernes) son de seguimiento: cómo van las llamadas abiertas con el último precio. No escriben en la base ni verifican nada; la verificación sigue siendo con el cierre siguiente.
+- **Precios del seguimiento:** cripto por CoinGecko y hasta seis símbolos por Twelve Data. Si un precio falla, el correo dice «sin precio» en vez de inventarlo.
+

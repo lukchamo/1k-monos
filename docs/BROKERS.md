@@ -46,3 +46,22 @@ Sin encaje: **Binance** (fuentes de terceros dicen que cierra las cuentas españ
 ## Sin verificar
 
 Entidad europea de Capital.com y su depósito mínimo en España; margen al contado y tamaños mínimos de Kraken en el EEE; comisiones de eToro, IBKR, OKX, Bybit y Coinbase; disponibilidad de Alpaca para residentes en España; XTB, OANDA, Bitpanda y tastytrade no se revisaron.
+
+## Qué hay del laboratorio en Neverless (24-nov-2026)
+
+Fuente: el catálogo público `neverless.com/assets` (1.090 acciones, 416 ETF, cripto y metales aparte). Es el mismo listado
+en las versiones `es-eu`, `en-eu` y `es-eea` de la web. Está volcado en `worker/src/brokers.ts` y los correos lo usan para
+decir con qué sigla buscar cada activo.
+
+| Activo del laboratorio | En Neverless | Nota |
+|---|---|---|
+| MSFT, NVDA, TSLA, PLTR, CRWV, SPCX, COIN | misma sigla, acción | |
+| BTC-USD, ETH-USD, SOL-USD | BTC, ETH, SOL | cripto, 24 h |
+| SPY, QQQ, TLT, EWP, EWJ, EEM, EWZ, EWW, FXI | misma sigla, ETF | salen en la web; **en la app del autor no aparecieron**, sin confirmar por qué |
+| GLD | XAU (oro) | no es el mismo instrumento: ETF frente a oro directo |
+| SAN.MC | SAN | ADR de Nueva York en dólares, no la acción de Madrid |
+| USO, FEZ | no están | |
+
+Lo que no sabemos: si la app enseña a cada cuenta el catálogo entero. La web no lo dice. Hasta confirmarlo, los correos
+marcan los ETF como «aparece en su catálogo web; si tu app no lo muestra, tu cuenta no lo tiene».
+

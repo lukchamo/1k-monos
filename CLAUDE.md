@@ -30,6 +30,7 @@ worker/      Cloudflare Worker en TypeScript
   src/mcp.ts     MCP propio (JSON-RPC sobre HTTP): ranking, explicar_decision, correr_backtest, presion_noticias, comparar_versiones
   migrations/    esquema D1
   src/digest*.ts resumen privado al autor: llamadas de consenso, verificación y correo (digest-core.ts es puro)
+  src/brokers.ts qué activos del laboratorio están en Neverless y con qué sigla (foto del catálogo público)
   src/access.ts  MCP privado: valida el JWT de Cloudflare Access (mcp.1kmonos.com, OAuth con código de un solo uso)
   src/guard.ts   guardarraíles de la API: validación, límite de ritmo, token, saneado de texto de terceros
   test/          paridad, point-in-time, noticias, validación, guardarraíles
@@ -53,7 +54,7 @@ python research/golden.py          # regenera shared/golden/*.json
 
 # worker
 cd worker && npm install
-npm run check                      # typecheck + 227 tests (paridad incluida)
+npm run check                      # typecheck + 233 tests (paridad incluida)
 npm run db:migrate:local && npm run db:seed:local
 npm run dev:local                  # sin Workers AI (no requiere login); token MCP local: dev-token
 npx wrangler deploy --dry-run      # valida bindings y empaquetado

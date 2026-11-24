@@ -14,7 +14,7 @@ import { ingestArticles, ingestNews, type RawArticle } from "./ingest/news";
 import { coinGecko, ingestPrices, twelveData, type PriceSource } from "./ingest/prices";
 import { mcp } from "./mcp";
 import { verifyAccessJwt } from "./access";
-import { sendDigest, trackRecord } from "./digest";
+import { sendDigest, sendFollowUp, trackRecord } from "./digest";
 import { notifyAll, subscribe, unsubscribe } from "./push";
 import { renderPromo } from "./promo";
 
@@ -26,6 +26,9 @@ export { InvestorDO } from "./do/investor";
 export { BacktestWorkflow } from "./workflows/backtest";
 
 const CRON_NEWS = "*/15 * * * *";
+// seguimiento por correo entre cierres: media mañana en España y media hora después de abrir Nueva York
+const CRON_MORNING = "30 9 * * MON-FRI";
+const CRON_OPEN = "0 15 * * MON-FRI";
 // de lunes a viernes con nombres: en Cloudflare el día 1 es domingo, así que "1-5" corría en domingo y se saltaba el viernes
 const CRON_CLOSE = "30 22 * * MON-FRI"; // 22:30 UTC: después del cierre de NYSE en invierno (21:00) y en verano (20:00)
 
@@ -268,7 +271,7 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
   if (p === "/v1/push/subscribe") return json(await subscribe(env.DB, await readJson(req, 4096)));
   if (p === "/v1/push/unsubscribe") return json(await unsubscribe(env.DB, await readJson(req, 4096)));
 
-  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test" && p !== "/v1/promo" && p !== "/v1/ingest") return fail(404, "no encontrado");
+  if (p !== "/v1/backtest" && p !== "/v1/decide" && p !== "/v1/digest" && p !== "/v1/push/test" && p !== "/v1/promo" && p !== "/v1/ingest" && p !== "/v1/followup") return fail(404, "no encontrado");
   if (!(await tokenOk(req, env.MCP_TOKEN))) return fail(401, "no autorizado", { "www-authenticate": "Bearer" });
   const b = (await readJson(req, p === "/v1/ingest" ? 128 * 1024 : undefined)) as Record<string, unknown>;
   if (!b || typeof b !== "object" || Array.isArray(b)) throw new BadInput("el cuerpo debe ser un objeto JSON");
@@ -328,6 +331,9 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
   if (p === "/v1/push/test")
     return json(await notifyAll(env, { title: "1K Monos · prueba", body: "Los avisos funcionan. Te avisaremos cuando el laboratorio registre algo nuevo. Es un experimento, no una recomendación.", url: env.SITE_URL ?? "/", tag: "prueba" }));
 
+  // correo de seguimiento a demanda (send: false = vista previa)
+  if (p === "/v1/followup") return json(await sendFollowUp(env, b.moment === "apertura" ? "apertura" : "mañana", b.send !== false));
+
   // resumen privado de una fecha: lo construye, verifica las llamadas anteriores y lo envía (send: false = vista previa)
   if (p === "/v1/digest") {
     const out = await sendDigest(env, v.date(b.date), b.send !== false);
@@ -368,6 +374,14 @@ export default {
       }
       const s = await sessions(env);
       for (const q of NEWS_QUERIES) ctx.waitUntil(ingestNews(env, q, s).catch((e) => console.error("noticias", q, e)));
+      return;
+    }
+    if (controller.cron === CRON_MORNING || controller.cron.startsWith("30 9 ")) {
+      await sendFollowUp(env, "mañana").catch((e) => console.error(JSON.stringify({ level: "error", message: "seguimiento", error: String(e) })));
+      return;
+    }
+    if (controller.cron === CRON_OPEN || controller.cron.startsWith("0 15 ")) {
+      await sendFollowUp(env, "apertura").catch((e) => console.error(JSON.stringify({ level: "error", message: "seguimiento", error: String(e) })));
       return;
     }
     // por si Cloudflare normaliza la expresión: basta con la hora del cierre
