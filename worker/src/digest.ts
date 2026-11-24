@@ -78,7 +78,7 @@ export async function sendDigest(env: Env, date: string, send = true): Promise<{
 
 // ── seguimiento entre cierres ────────────────────────────────────────────────
 const GECKO: Record<string, string> = { "BTC-USD": "bitcoin", "ETH-USD": "ethereum", "SOL-USD": "solana" };
-const TWELVE: Record<string, string> = { "SAN.MC": "SAN:BME" };
+const TWELVE: Record<string, string> = { "SAN.MC": "SAN:BME", "BTC-USD": "BTC/USD", "ETH-USD": "ETH/USD", "SOL-USD": "SOL/USD" };
 
 /** último precio de unos pocos símbolos. Cripto por CoinGecko (sin clave); el resto por Twelve Data. Lo que falle queda en null. */
 export async function livePrices(env: Env, symbols: string[]): Promise<Record<string, number | null>> {
@@ -113,6 +113,23 @@ export async function livePrices(env: Env, symbols: string[]): Promise<Record<st
       })().catch(() => {}),
     );
   await Promise.all(jobs);
+  // CoinGecko rechaza a veces las peticiones desde Workers: la cripto que falte se pide a Twelve Data
+  const missing = crypto.filter((c) => out[c] === null);
+  if (missing.length && env.TWELVE_DATA_API_KEY) {
+    try {
+      const u = new URL("https://api.twelvedata.com/price");
+      u.searchParams.set("symbol", missing.map((c) => TWELVE[c]).join(","));
+      u.searchParams.set("apikey", env.TWELVE_DATA_API_KEY);
+      const r = await fetch(u);
+      const j: any = r.ok ? await r.json() : null;
+      for (const c of missing) {
+        const n = Number(missing.length === 1 ? j?.price : j?.[TWELVE[c]]?.price);
+        if (Number.isFinite(n) && n > 0) out[c] = n;
+      }
+    } catch {
+      // sin precio: el correo lo dice
+    }
+  }
   return out;
 }
 
