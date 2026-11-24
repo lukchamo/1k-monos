@@ -44,3 +44,63 @@ describe("resumen · correo", () => {
     expect(m.html).not.toContain("<b>X");
   });
 });
+
+import { brokerBoard, moveInFavor, reading, renderFollowUp, voteBoard, type FollowUp } from "../src/digest-core";
+import { neverless, neverlessLine, NEVERLESS } from "../src/brokers";
+import { UNIVERSE } from "../src/engine/universe";
+
+describe("Neverless · qué se puede operar", () => {
+  it("cubre el universo salvo USO y FEZ, y no inventa símbolos", () => {
+    expect(UNIVERSE.filter((s) => !neverless(s)).sort()).toEqual(["FEZ", "USO"]);
+    for (const s of Object.keys(NEVERLESS)) expect(UNIVERSE).toContain(s);
+  });
+  it("da la sigla de la app y avisa cuando no es el mismo instrumento", () => {
+    expect(neverless("ETH-USD")).toMatchObject({ ticker: "ETH", kind: "cripto" });
+    expect(neverlessLine("GLD")).toMatch(/XAU.*Ojo/);
+    expect(neverlessLine("SAN.MC")).toMatch(/ADR/);
+    expect(neverlessLine("TLT")).toMatch(/catálogo web/);
+    expect(neverlessLine("USO")).toMatch(/No está/);
+  });
+});
+
+describe("tablero de votos y seguimiento", () => {
+  const rows = [
+    ...Array.from({ length: 6 }, () => ({ symbol: "ETH-USD", position: -1 })),
+    ...Array.from({ length: 2 }, () => ({ symbol: "ETH-USD", position: 1 })),
+    { symbol: "NVDA", position: 1 },
+    { symbol: "NVDA", position: -1 },
+    { symbol: "USO", position: 1 },
+  ];
+  const board = voteBoard(rows, { "ETH-USD": 1700, NVDA: 165 });
+  it("ordena por acuerdo y describe el reparto sin aconsejar", () => {
+    expect(board.map((v) => v.symbol)).toEqual(["USO", "ETH-USD", "NVDA"]);
+    expect(reading(board[1])).toBe("mayoría en corto");
+    expect(reading(board[2])).toBe("empate");
+  });
+  it("el tablero del bróker deja fuera lo que no está en Neverless", () => {
+    expect(brokerBoard(board).map((v) => v.ticker)).toEqual(["ETH", "NVDA"]);
+  });
+  const f: FollowUp = {
+    date: "2026-11-23",
+    at: "2026-11-24T09:30:00.000Z",
+    moment: "mañana",
+    open: [
+      { date: "2026-11-23", symbol: "ETH-USD", direction: -1, score: -0.29, n_long: 9, n_short: 17, n_total: 28, entry_close: 1700, now: 1615 },
+      { date: "2026-11-23", symbol: "TLT", direction: 1, score: 0.25, n_long: 11, n_short: 4, n_total: 28, entry_close: 81.69, now: null },
+    ],
+    board,
+  };
+  it("mide el movimiento a favor de la dirección de la llamada", () => {
+    expect(moveInFavor(f.open[0])).toBeCloseTo(0.05, 6);
+    expect(moveInFavor(f.open[1])).toBeNull();
+  });
+  it("el correo dice que no hay decisiones nuevas y lleva el aviso", () => {
+    const m = renderFollowUp(f, "https://lab.test");
+    expect(m.subject).toContain("seguimiento 09:30 UTC");
+    expect(m.text).toContain("No hay decisiones nuevas");
+    expect(m.text).toContain("+5,0 % a favor");
+    expect(m.text).toContain("sin precio");
+    expect(m.html).toContain("No es una recomendación de inversión");
+    expect(m.text).not.toMatch(/deberías|te recomiendo|compra ya/i);
+  });
+});
