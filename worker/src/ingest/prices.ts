@@ -7,6 +7,7 @@
  * pública; los mapeos de símbolos marcados "verificar" hay que confirmarlos en la fase 1.
  */
 import type { Env } from "../env";
+import { yahooClose } from "./yahoo-core";
 
 export const MAX_DIFF = 0.005;
 
@@ -32,14 +33,31 @@ export const twelveData: PriceSource = {
     const u = new URL("https://api.twelvedata.com/time_series");
     u.searchParams.set("symbol", TWELVE_MAP[symbol] ?? symbol);
     u.searchParams.set("interval", "1day");
-    u.searchParams.set("start_date", date);
-    u.searchParams.set("end_date", date);
+    // sin fechas: con start_date = end_date la API no devuelve la vela del día
+    u.searchParams.set("outputsize", "5");
     u.searchParams.set("apikey", env.TWELVE_DATA_API_KEY);
     const r = await fetch(u);
     if (!r.ok) return null;
     const j: any = await r.json();
     const v = j?.values?.find((x: any) => String(x.datetime).startsWith(date));
     return v ? Number(v.close) : null;
+  },
+};
+
+/**
+ * Yahoo Finance (gráfico diario, sin clave): la misma serie con la que se sembró el laboratorio.
+ * Solo devuelve una vela ya cerrada: si es la del día en curso (cripto antes de medianoche UTC,
+ * bolsa con la sesión abierta), devuelve null y el día queda incompleto en vez de usar un precio a medias.
+ */
+export const yahoo: PriceSource = {
+  name: "yahoo",
+  async close(_env, symbol, date) {
+    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=10d`, {
+      headers: { "user-agent": "Mozilla/5.0 (compatible; lab-1k-monos)", accept: "application/json" },
+    });
+    if (!r.ok) return null;
+    const j: any = await r.json();
+    return yahooClose(j?.chart?.result?.[0], date, Date.now() / 1000);
   },
 };
 

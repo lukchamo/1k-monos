@@ -61,7 +61,7 @@
       "*/15 * * * *", // noticias
       "30 9 * * MON-FRI", // correo de seguimiento: media mañana en España
       "0 15 * * MON-FRI", // correo de seguimiento: tras abrir Nueva York
-      "30 22 * * MON-FRI" // precios + decisiones, tras el cierre de EE. UU.
+      "10 0 * * TUE-SAT" // cierre del día anterior: precios, decisiones y correo (tras cerrar la vela de cripto)
     ]
   }
 

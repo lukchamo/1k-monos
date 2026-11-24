@@ -104,3 +104,23 @@ describe("tablero de votos y seguimiento", () => {
     expect(m.text).not.toMatch(/deberías|te recomiendo|compra ya/i);
   });
 });
+
+import { yahooClose } from "../src/ingest/yahoo-core";
+describe("fuente de precios de Yahoo", () => {
+  const D = (s: string) => Date.parse(s) / 1000;
+  const stock = (extra = {}) => ({ meta: { gmtoffset: -18000, instrumentType: "ETF", currentTradingPeriod: { regular: { end: D("2026-11-24T21:00:00Z") } }, ...extra }, timestamp: [D("2026-11-23T14:30:00Z"), D("2026-11-24T14:30:00Z")], indicators: { quote: [{ close: [81.6, 81.4] }], adjclose: [{ adjclose: [81.69, 81.49] }] } });
+  it("toma el cierre ajustado de la sesión ya terminada", () => {
+    expect(yahooClose(stock(), "2026-11-24", D("2026-11-24T22:30:00Z"))).toBe(81.49);
+    expect(yahooClose(stock(), "2026-11-23", D("2026-11-24T15:00:00Z"))).toBe(81.69);
+  });
+  it("no usa una vela a medias ni un día que no está", () => {
+    expect(yahooClose(stock(), "2026-11-24", D("2026-11-24T16:00:00Z"))).toBeNull();
+    expect(yahooClose(stock(), "2026-11-25", D("2026-11-25T23:00:00Z"))).toBeNull();
+    expect(yahooClose(undefined, "2026-11-24", 0)).toBeNull();
+  });
+  it("cripto: solo cuando ya existe la vela del día siguiente", () => {
+    const c = (ts: string[]) => ({ meta: { gmtoffset: 0, instrumentType: "CRYPTOCURRENCY", currentTradingPeriod: { regular: { end: D("2026-11-24T23:59:00Z") } } }, timestamp: ts.map(D), indicators: { quote: [{ close: ts.map((_, i) => 1700 + i) }] } });
+    expect(yahooClose(c(["2026-11-23T00:00:00Z", "2026-11-24T00:00:00Z"]), "2026-11-24", D("2026-11-24T23:59:30Z"))).toBeNull();
+    expect(yahooClose(c(["2026-11-24T00:00:00Z", "2026-11-25T00:00:00Z"]), "2026-11-24", D("2026-11-25T00:10:00Z"))).toBe(1700);
+  });
+});

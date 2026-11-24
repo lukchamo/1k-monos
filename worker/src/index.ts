@@ -11,7 +11,7 @@ import { curves, decisionReason, labStatus, latestNews, newsFor, paperPositions,
 import { allow, backtestParams, BadInput, cleanText, DISCLAIMER, fail, json, preflight, readJson, safeUrl, tokenOk, v } from "./guard";
 import { lector, pressure, pressureBreakdown } from "./news/scoring";
 import { ingestArticles, ingestNews, type RawArticle } from "./ingest/news";
-import { coinGecko, ingestPrices, twelveData, type PriceSource } from "./ingest/prices";
+import { ingestPrices, twelveData, yahoo, type PriceSource } from "./ingest/prices";
 import { mcp } from "./mcp";
 import { verifyAccessJwt } from "./access";
 import { sendDigest, sendFollowUp, trackRecord } from "./digest";
@@ -29,8 +29,9 @@ const CRON_NEWS = "*/15 * * * *";
 // seguimiento por correo entre cierres: media mañana en España y media hora después de abrir Nueva York
 const CRON_MORNING = "30 9 * * MON-FRI";
 const CRON_OPEN = "0 15 * * MON-FRI";
-// de lunes a viernes con nombres: en Cloudflare el día 1 es domingo, así que "1-5" corría en domingo y se saltaba el viernes
-const CRON_CLOSE = "30 22 * * MON-FRI"; // 22:30 UTC: después del cierre de NYSE en invierno (21:00) y en verano (20:00)
+// El cierre se toma a las 00:10 UTC del día siguiente (martes a sábado): la vela diaria de cripto cierra a
+// medianoche UTC y antes de esa hora no existe. Con nombres de día: en Cloudflare el 1 es domingo.
+const CRON_CLOSE = "10 0 * * TUE-SAT";
 
 /** consultas de noticias por mercado (una búsqueda por tema, no por activo) */
 const NEWS_QUERIES = [
@@ -293,6 +294,8 @@ async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Res
       });
       out.news = await ingestArticles(env, arts, await sessions(env));
     }
+    // relanzar el cierre de un día con las fuentes del cron (Yahoo y Twelve Data)
+    if (b.close !== undefined) out.close = await closeDay(env, v.date((b.close as Record<string, unknown>)?.date), yahoo, twelveData);
     if (b.prices !== undefined) {
       const pr = b.prices as Record<string, unknown>;
       const date = v.date(pr?.date);
@@ -385,8 +388,9 @@ export default {
       return;
     }
     // por si Cloudflare normaliza la expresión: basta con la hora del cierre
-    if (controller.cron === CRON_CLOSE || controller.cron.startsWith("30 22 ")) {
-      await closeDay(env, new Date(controller.scheduledTime).toISOString().slice(0, 10), twelveData, coinGecko);
+    if (controller.cron === CRON_CLOSE || controller.cron.startsWith("10 0 ")) {
+      // la fecha que se cierra es la del día anterior al disparo
+      await closeDay(env, new Date(controller.scheduledTime - 86_400_000).toISOString().slice(0, 10), yahoo, twelveData);
     }
   },
 } satisfies ExportedHandler<Env>;
