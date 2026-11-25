@@ -51,7 +51,7 @@
     "ACCESS_TEAM_DOMAIN": "calm-rain-cafa.cloudflareaccess.com",
     "ACCESS_AUD": "a8fe5b2573707240dca44db57a885088ccf22ff6a9d2a9c2a717e43a4987efa0",
     "TAXONOMY_VERSION": "tax-1.0",
-    "PROMPT_VERSION": "extract-1.1",
+    "PROMPT_VERSION": "extract-1.2",
     "AI_GATEWAY_ID": "lab-inversionistas",
     "EXTRACT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
   },

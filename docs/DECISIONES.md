@@ -53,3 +53,10 @@ Registro de lo decidido y por qué. Una decisión nueva va al final; si una se r
 - **Tres correos al día, no cuatro señales.** El laboratorio decide una vez, al cierre. Los dos correos nuevos (09:30 y 15:00 UTC, de lunes a viernes) son de seguimiento: cómo van las llamadas abiertas con el último precio. No escriben en la base ni verifican nada; la verificación sigue siendo con el cierre siguiente.
 - **Precios del seguimiento:** cripto por CoinGecko y hasta seis símbolos por Twelve Data. Si un precio falla, el correo dice «sin precio» en vez de inventarlo.
 
+## D-26 · Cierre con Yahoo a las 00:10 UTC y noticias sin duplicados (25-nov-2026)
+
+- **Fuente primaria de precios: Yahoo** (gráfico diario, sin clave), la misma serie con la que se sembró el laboratorio. Twelve Data queda de contraste donde responde. El primer cierre automático (24-nov) falló entero porque Twelve Data no devuelve la vela con `start_date = end_date`.
+- **El cierre se toma a las 00:10 UTC del día siguiente**, de martes a sábado. La vela diaria de cripto cierra a medianoche UTC; a las 22:30 no existe. Solo se acepta una vela ya cerrada: si no, el día queda incompleto.
+- **Noticias: cada URL se procesa una vez.** La búsqueda devolvía las mismas noticias cada 15 minutos y se volvía a extraer y a encolar (615 filas de 19 URL en un día).
+- **`extract-1.2`:** temas, factores macro y tipos secundarios fuera de la taxonomía se descartan en vez de invalidar la noticia. El tipo principal y las entidades siguen siendo obligatorios.
+

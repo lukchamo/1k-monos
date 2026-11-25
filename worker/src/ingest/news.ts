@@ -146,6 +146,14 @@ export async function extract(env: Env, a: RawArticle, sessions: string[]): Prom
     };
     // el laboratorio solo opera su universo: una entidad con otro símbolo no puede mover nada
     if (Array.isArray(event.entities)) event.entities = event.entities.filter((x) => KNOWN.has(String(x?.symbol)));
+    // listas opcionales: un valor fuera de la taxonomía se descarta en vez de invalidar la noticia entera
+    const c: any = event.classification;
+    if (c && typeof c === "object") {
+      const keep = (list: unknown, ok: (v: string) => boolean) => (Array.isArray(list) ? list.filter((v) => typeof v === "string" && ok(v)) : []);
+      c.themes = keep(c.themes, (v) => TAXONOMY.themes.includes(v));
+      c.macro_factors = keep(c.macro_factors, (v) => TAXONOMY.macro_factors.includes(v));
+      c.secondary_event_types = keep(c.secondary_event_types, (v) => v in TAXONOMY.event_types);
+    }
     delete (event as any).outcome; // jamás desde el LLM
     delete (event as any).computed_market_context;
     // la fuente la pone el sistema con la URL ya validada: el modelo no puede cambiar a dónde enlazamos
@@ -172,7 +180,14 @@ export async function ingestArticles(env: Env, arts: RawArticle[], sessions: str
   let saved = 0;
   let review = 0;
   for (const a of arts) {
-    const key = `raw/${now.toISOString().slice(0, 10)}/${(await sha256hex(a.url)).slice(0, 16)}.json`;
+    const hash = (await sha256hex(a.url)).slice(0, 16);
+    // cada URL se procesa una sola vez: la búsqueda devuelve las mismas noticias en cada ciclo y, sin esto,
+    // se volvía a pagar la extracción y la cola de revisión crecía con duplicados
+    const seen = await env.DB.prepare("SELECT 1 AS x FROM news_events WHERE r2_key LIKE ?1 UNION ALL SELECT 1 FROM news_review_queue WHERE url = ?2 LIMIT 1")
+      .bind(`%/${hash}.json`, a.url)
+      .first();
+    if (seen) continue;
+    const key = `raw/${now.toISOString().slice(0, 10)}/${hash}.json`;
     await env.RAW.put(key, JSON.stringify(a));
     const { event, errors } = await extract(env, a, sessions);
     if (event) {
